@@ -4,24 +4,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"math"
 	"strconv"
 	"time"
 )
 
-import (
-	"encoding/json"
-	"errors"
-	"fake_buy_cli/src/cmn"
-	"fmt"
-	"math"
-
-	"strconv"
-	"time"
-)
+var mgr exchangeapi.ApiConnector
 
 func NewBinanceApi(exchangeapi.ApiKey) *BinanceApi {
+	bObj := B{}
+	bObj.aStr = "dsfg"
+
+
 	return &BinanceApi{
 		ApiKey:    cred.ApiKey,
 		ApiSecret: cred.ApiSecret,

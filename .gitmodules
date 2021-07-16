@@ -1,0 +1,8 @@
+[submodule "vendor/posipaka-trade-cmn"]
+	path = vendor/posipaka-trade-cmn
+	url = git@github.com:posipaka-trade/posipaka-trade-cmn.git
+	branch = main
+[submodule "api/binance-spot-api-docs"]
+	path = api/binance-spot-api-docs
+	url = git@github.com:binance/binance-spot-api-docs.git
+	branch = master
