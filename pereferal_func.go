@@ -1,4 +1,4 @@
-package binance_api_go
+package binance_api
 
 import (
 	"crypto/hmac"
