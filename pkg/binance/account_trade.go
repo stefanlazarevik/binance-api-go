@@ -2,8 +2,8 @@ package binance
 
 import (
 	"fmt"
-	"github.com/posipaka-trade/binance-api-go/parser"
-	"github.com/posipaka-trade/binance-api-go/parser/sha256encryptor"
+	"github.com/posipaka-trade/binance-api-go/internal/parser"
+	"github.com/posipaka-trade/binance-api-go/internal/parser/sha256encryptor"
 	"net/http"
 	"net/url"
 	"posipaka-trade-cmn/exchangeapi"
