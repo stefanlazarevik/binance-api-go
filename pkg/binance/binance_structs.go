@@ -1,20 +1,20 @@
 package binance
 
 import (
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"net/http"
-	"posipaka-trade-cmn/exchangeapi"
 )
 
 const baseUrl = "https://api.binance.com"
 
-type BinanceExchangeManager struct {
+type ExchangeManager struct {
 	apiKey exchangeapi.ApiKey
 
 	client *http.Client
 }
 
-func New(key exchangeapi.ApiKey) *BinanceExchangeManager {
-	return &BinanceExchangeManager{
+func New(key exchangeapi.ApiKey) *ExchangeManager {
+	return &ExchangeManager{
 		apiKey: key,
 		client: &http.Client{},
 	}
