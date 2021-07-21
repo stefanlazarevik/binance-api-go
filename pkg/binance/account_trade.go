@@ -1,16 +1,28 @@
-package binance_api
+package binance
 
 import (
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/parser"
+	"github.com/posipaka-trade/binance-api-go/parser/sha256encryptor"
 	"net/http"
 	"net/url"
 	"posipaka-trade-cmn/exchangeapi"
 	"strings"
 )
+
+func (manager *BinanceExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
+	params := fmt.Sprint(symbolParam, "=", symbol.Base, symbol.Quote)
+	params = fmt.Sprintf("%s&%s=%s", params, totalParams,
+		sha256encryptor.EncryptMessage(params, manager.apiKey.Secret))
+
+	response, err := manager.client.Get(fmt.Sprint(baseUrl, allOrdersEndpoint, "?", params))
+	if err != nil {
+		return nil, err
+	}
+
+	defer response.Body.Close()
+
+}
 
 func (manager *BinanceExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
 	requestBody := manager.createOrderRequestBody(&parameters)
@@ -46,9 +58,6 @@ func (manager *BinanceExchangeManager) createOrderRequestBody(parameters *exchan
 		body.Add(quantityParam, fmt.Sprint(parameters.Quantity))
 	}
 
-	hash := hmac.New(sha256.New, []byte(manager.apiKey.Secret))
-	hash.Write([]byte(body.Encode()))
-
-	body.Add(totalParams, hex.EncodeToString(hash.Sum(nil)))
+	body.Add(totalParams, sha256encryptor.EncryptMessage(body.Encode(), manager.apiKey.Secret))
 	return body.Encode()
 }

@@ -11,20 +11,30 @@ import (
 // responses json keys
 const (
 	codeKey = "code" // error code
-	msgKey = "msg"   // error message
+	msgKey  = "msg"  // error message
 )
+
+func ParseGetOrderListResponse(response *http.Response) ([]exchangeapi.OrderInfo, error) {
+	_, err := getResponseBody(response)
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO parse Orders info
+	return nil, nil
+}
 
 func ParseSetOrderResponse(response *http.Response) (float64, error) {
 	_, err := getResponseBody(response)
 	if err != nil {
 		return 0, err
 	}
-
+	// TODO add set order parsing
 	return 0, nil
 }
 
 func getResponseBody(response *http.Response) (map[string]interface{}, error) {
-	if response.StatusCode / 100 != 2 && response.Body == nil {
+	if response.StatusCode/100 != 2 && response.Body == nil {
 		return nil, &exchangeapi.ExchangeError{
 			Type:    exchangeapi.HttpErr,
 			Code:    response.StatusCode,
@@ -39,11 +49,11 @@ func getResponseBody(response *http.Response) (map[string]interface{}, error) {
 
 	var body map[string]interface{}
 	err = json.Unmarshal(respondBody, &body)
-	if err != nil  {
+	if err != nil {
 		return nil, err
 	}
 
-	if response.StatusCode / 100 != 2 {
+	if response.StatusCode/100 != 2 {
 		return nil, parseBinanceError(body)
 	}
 
@@ -63,7 +73,7 @@ func parseBinanceError(body map[string]interface{}) error {
 
 	return &exchangeapi.ExchangeError{
 		Type:    exchangeapi.BinanceErr,
-		Code:	 code,
+		Code:    code,
 		Message: message,
 	}
 }

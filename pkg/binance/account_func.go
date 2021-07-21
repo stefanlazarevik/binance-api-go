@@ -1,4 +1,4 @@
-package binance_api_go
+package binance
 
 import (
 	"encoding/json"
@@ -8,19 +8,6 @@ import (
 	"strconv"
 	"time"
 )
-
-var mgr exchangeapi.ApiConnector
-
-func NewBinanceApi(exchangeapi.ApiKey) *BinanceApi {
-	bObj := B{}
-	bObj.aStr = "dsfg"
-
-
-	return &BinanceApi{
-		ApiKey:    cred.ApiKey,
-		ApiSecret: cred.ApiSecret,
-	}
-}
 
 func (binanceApi *BinanceApi) NewFullMarketOrder(orderParams OrdersParams) (float64, error) {
 	var orderResult OrderResult
