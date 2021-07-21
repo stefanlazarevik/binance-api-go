@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/parser"
 	"github.com/posipaka-trade/binance-api-go/internal/parser/sha256encryptor"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"net/http"
 	"net/url"
-	"posipaka-trade-cmn/exchangeapi"
 	"strings"
 )
 
-func (manager *BinanceExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
+func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
 	params := fmt.Sprint(symbolParam, "=", symbol.Base, symbol.Quote)
 	params = fmt.Sprintf("%s&%s=%s", params, totalParams,
 		sha256encryptor.EncryptMessage(params, manager.apiKey.Secret))
@@ -20,11 +20,15 @@ func (manager *BinanceExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSy
 		return nil, err
 	}
 
-	defer response.Body.Close()
-
+	defer func() {
+		if err := response.Body.Close(); err != nil {
+			panic(err.Error())
+		}
+	}()
+	return nil, err
 }
 
-func (manager *BinanceExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
+func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
 	requestBody := manager.createOrderRequestBody(&parameters)
 	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
 	if err != nil {
@@ -39,12 +43,16 @@ func (manager *BinanceExchangeManager) SetOrder(parameters exchangeapi.OrderPara
 		return 0, err
 	}
 
-	defer response.Body.Close()
+	defer func() {
+		if err := response.Body.Close(); err != nil {
+			panic(err.Error())
+		}
+	}()
 
 	return parser.ParseSetOrderResponse(response)
 }
 
-func (manager *BinanceExchangeManager) createOrderRequestBody(parameters *exchangeapi.OrderParameters) string {
+func (manager *ExchangeManager) createOrderRequestBody(parameters *exchangeapi.OrderParameters) string {
 	body := url.Values{}
 	body.Add(symbolParam, fmt.Sprint(parameters.Symbol.Base, parameters.Symbol.Quote))
 	body.Add(sideParam, orderSideAlias[parameters.Side])
