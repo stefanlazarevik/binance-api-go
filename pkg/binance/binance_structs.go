@@ -30,21 +30,10 @@ var orderTypeAlias = map[exchangeapi.OrderType]string{
 	exchangeapi.Market: "MARKET",
 }
 
-// binance parametersValue
-const (
-	symbolParam      = "symbol"
-	sideParam        = "side"
-	typeParam        = "type"
-	quantityParam    = "quantity"
-	priceParam       = "price"
-	timeInForceParam = "timeInForce"
-	totalParams      = "totalParams"
-)
-
 // binance api endpoints
 const (
-	newOrderEndpoint  = "/api/v3/order"
-	allOrdersEndpoint = "/api/v3/allOrders"
+	newOrderEndpoint   = "/api/v3/order"
+	openOrdersEndpoint = "/api/v3/openOrders"
 )
 
 const goodTilCanceled = "GTC"
