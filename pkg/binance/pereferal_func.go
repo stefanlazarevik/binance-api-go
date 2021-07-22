@@ -151,3 +151,24 @@ func parseLotSizeJson(filter map[string]interface{}) (LotSize, bool) {
 	}
 	return lotSize, true
 }
+func (c *Candlesticks) UnmarshalJSON(data []byte) error {
+
+	var v []interface{}
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	c.OpenTime, _ = v[0].(int64)
+	c.Open, _ = v[1].(string)
+	c.High, _ = v[2].(string)
+	c.Low, _ = v[3].(string)
+	c.Close, _ = v[4].(string)
+	c.Volume, _ = v[5].(string)
+	c.CloseTime, _ = v[6].(int64)
+	c.QuoteAssetVolume, _ = v[7].(string)
+	c.NumberOfTrade, _ = v[8].(int64)
+	c.TakerBuyBaseAssetVolume, _ = v[9].(string)
+	c.TakerBuyQuoteAssetVolume, _ = v[10].(string)
+	c.Ignore, _ = v[11].(string)
+	return nil
+}

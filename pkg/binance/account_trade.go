@@ -1,12 +1,15 @@
 package binance
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/parser"
 	"github.com/posipaka-trade/binance-api-go/internal/parser/sha256encryptor"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 )
 
@@ -68,4 +71,50 @@ func (manager *ExchangeManager) createOrderRequestBody(parameters *exchangeapi.O
 
 	body.Add(totalParams, sha256encryptor.EncryptMessage(body.Encode(), manager.apiKey.Secret))
 	return body.Encode()
+}
+func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
+	params := fmt.Sprintf("symbol=%s", symbol)
+
+	response, err := manager.client.Get(fmt.Sprint(baseUrl, getPriceEndpoint, "?", params))
+	if err != nil {
+		return 0, err
+	}
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	pricesMap := map[string]string{}
+	err = json.Unmarshal(body, &pricesMap)
+	if err != nil {
+		return 0, err
+	}
+	priceStr := pricesMap["price"]
+	price, err := strconv.ParseFloat(priceStr, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	return price, nil
+}
+func (manager *ExchangeManager) GetCandlestick(symbol, interval string, limit int) ([]Candlesticks, error) {
+	params := fmt.Sprintf("symbol=%s&interval=%s&limit=%d", symbol, interval, limit)
+
+	response, err := manager.client.Get(fmt.Sprint(baseUrl, getCandlestickEndpoint, "?", params))
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	var candleData []Candlesticks
+
+	err = json.Unmarshal(body, &candleData)
+	if err != nil {
+		return nil, err
+	}
+
+	return candleData, nil
 }
