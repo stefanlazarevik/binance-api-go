@@ -3,22 +3,33 @@ package binance
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/posipaka-trade/binance-api-go/internal/parser"
-	"github.com/posipaka-trade/binance-api-go/internal/parser/sha256encryptor"
+	"github.com/posipaka-trade/binance-api-go/internal/reqresp/paramnames"
+	"github.com/posipaka-trade/binance-api-go/internal/reqresp/parser"
+	"github.com/posipaka-trade/binance-api-go/internal/sha256encryptor"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 )
 
 func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
-	params := fmt.Sprint(symbolParam, "=", symbol.Base, symbol.Quote)
-	params = fmt.Sprintf("%s&%s=%s", params, totalParams,
+	params := fmt.Sprintf("%s=%s%s&%s=%d", paramnames.SymbolParam, symbol.Base, symbol.Quote,
+		paramnames.TimestampParam, time.Now().UnixNano()/int64(time.Millisecond))
+	params = fmt.Sprintf("%s&%s=%s", params, paramnames.SignatureParam,
 		sha256encryptor.EncryptMessage(params, manager.apiKey.Secret))
 
-	response, err := manager.client.Get(fmt.Sprint(baseUrl, allOrdersEndpoint, "?", params))
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", params), nil)
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Set("X-MBX-APIKEY", manager.apiKey.Key)
+	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	response, err := manager.client.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +39,8 @@ func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) (
 			panic(err.Error())
 		}
 	}()
-	return nil, err
+
+	return parser.ParseGetOrderListResponse(response)
 }
 
 func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
@@ -55,21 +67,21 @@ func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters)
 	return parser.ParseSetOrderResponse(response)
 }
 
-func (manager *ExchangeManager) createOrderRequestBody(parameters *exchangeapi.OrderParameters) string {
+func (manager *ExchangeManager) createOrderRequestBody(params *exchangeapi.OrderParameters) string {
 	body := url.Values{}
-	body.Add(symbolParam, fmt.Sprint(parameters.Symbol.Base, parameters.Symbol.Quote))
-	body.Add(sideParam, orderSideAlias[parameters.Side])
-	body.Add(typeParam, orderTypeAlias[parameters.Type])
+	body.Add(paramnames.SymbolParam, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
+	body.Add(paramnames.SideParam, orderSideAlias[params.Side])
+	body.Add(paramnames.TypeParam, orderTypeAlias[params.Type])
 
-	if parameters.Type == exchangeapi.Limit {
-		body.Add(timeInForceParam, "GTC")
-		body.Add(priceParam, fmt.Sprint(parameters.Price))
-		body.Add(quantityParam, fmt.Sprint(parameters.Quantity))
-	} else if parameters.Type == exchangeapi.Market {
-		body.Add(quantityParam, fmt.Sprint(parameters.Quantity))
+	if params.Type == exchangeapi.Limit {
+		body.Add(paramnames.TimeInForceParam, "GTC")
+		body.Add(paramnames.PriceParam, fmt.Sprint(params.Price))
+		body.Add(paramnames.QuantityParam, fmt.Sprint(params.Quantity))
+	} else if params.Type == exchangeapi.Market {
+		body.Add(paramnames.QuantityParam, fmt.Sprint(params.Quantity))
 	}
 
-	body.Add(totalParams, sha256encryptor.EncryptMessage(body.Encode(), manager.apiKey.Secret))
+	body.Add(paramnames.SignatureParam, sha256encryptor.EncryptMessage(body.Encode(), manager.apiKey.Secret))
 	return body.Encode()
 }
 func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
