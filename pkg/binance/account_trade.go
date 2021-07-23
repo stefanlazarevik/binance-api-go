@@ -1,16 +1,13 @@
 package binance
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/reqresp/paramnames"
 	"github.com/posipaka-trade/binance-api-go/internal/reqresp/parser"
 	"github.com/posipaka-trade/binance-api-go/internal/sha256encryptor"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
-	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -21,7 +18,7 @@ func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) (
 	params = fmt.Sprintf("%s&%s=%s", params, paramnames.SignatureParam,
 		sha256encryptor.EncryptMessage(params, manager.apiKey.Secret))
 
-	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", params), nil)
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, allOrdersEndpoint, "?", params), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -85,48 +82,33 @@ func (manager *ExchangeManager) createOrderRequestBody(params *exchangeapi.Order
 	return body.Encode()
 }
 func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
-	params := fmt.Sprintf("symbol=%s", symbol)
+	params := fmt.Sprintf("symbol=%s%s", symbol.Base, symbol.Quote)
 
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getPriceEndpoint, "?", params))
 	if err != nil {
 		return 0, err
 	}
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return 0, err
-	}
 
-	pricesMap := map[string]string{}
-	err = json.Unmarshal(body, &pricesMap)
-	if err != nil {
-		return 0, err
-	}
-	priceStr := pricesMap["price"]
-	price, err := strconv.ParseFloat(priceStr, 64)
-	if err != nil {
-		return 0, err
-	}
-
-	return price, nil
+	return parser.ParserGetCurrentPrice(response)
 }
-func (manager *ExchangeManager) GetCandlestick(symbol, interval string, limit int) ([]Candlesticks, error) {
-	params := fmt.Sprintf("symbol=%s&interval=%s&limit=%d", symbol, interval, limit)
+func (manager *ExchangeManager) GetCandlestick(symbol exchangeapi.AssetsSymbol, interval string, limit int) (exchangeapi.Candlesticks, error) {
+	params := fmt.Sprintf("symbol=%s%s&interval=%s&limit=%d", symbol.Base, symbol.Quote, interval, limit)
 
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getCandlestickEndpoint, "?", params))
 	if err != nil {
-		return nil, err
+		return exchangeapi.Candlesticks{}, err
 	}
 
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return nil, err
-	}
-	var candleData []Candlesticks
+	//body, err := ioutil.ReadAll(response.Body)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//var candleData []Candlesticks
+	//
+	//err = json.Unmarshal(body, &candleData)
+	//if err != nil {
+	//	return nil, err
+	//}
 
-	err = json.Unmarshal(body, &candleData)
-	if err != nil {
-		return nil, err
-	}
-
-	return candleData, nil
+	return parser.ParseGetCandlestick(response)
 }
