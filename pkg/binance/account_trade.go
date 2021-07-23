@@ -16,7 +16,8 @@ func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) (
 	params.Set(pnames.Symbol, fmt.Sprint(symbol.Base, symbol.Quote))
 	queryStr := bncrequest.Sing(params, manager.apiKey.Secret)
 
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
+	orrdurl := fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr)
+	req, err := http.NewRequest(http.MethodGet, orrdurl, nil)
 	if err != nil {
 		return nil, err
 	}

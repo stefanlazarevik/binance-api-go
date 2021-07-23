@@ -21,8 +21,7 @@ func Sing(data url.Values, key string) string {
 	data.Set(pnames.Timestamp, fmt.Sprint(timestampMs))
 
 	hash := hmac.New(sha256.New, []byte(key))
-	hash.Write([]byte(key))
+	hash.Write([]byte(data.Encode()))
 
-	data.Set(pnames.Signature, hex.EncodeToString(hash.Sum(nil)))
-	return data.Encode()
+	return fmt.Sprintf("%s&%s=%s", data.Encode(), pnames.Signature, hex.EncodeToString(hash.Sum(nil)))
 }
