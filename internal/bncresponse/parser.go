@@ -1,10 +1,10 @@
-package parser
+package bncresponse
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/posipaka-trade/binance-api-go/internal/reqresp/paramnames"
+	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"io/ioutil"
 	"net/http"
@@ -17,7 +17,7 @@ const (
 	msgKey  = "msg"  // error message
 )
 
-func ParseGetOrderListResponse(response *http.Response) ([]exchangeapi.OrderInfo, error) {
+func ParseGetOrderList(response *http.Response) ([]exchangeapi.OrderInfo, error) {
 	bodyI, err := getResponseBody(response)
 	if err != nil {
 		return nil, err
@@ -40,7 +40,7 @@ func ParseGetOrderListResponse(response *http.Response) ([]exchangeapi.OrderInfo
 	return ordersInfo, nil
 }
 
-func ParseSetOrderResponse(response *http.Response) (float64, error) {
+func ParseSetOrder(response *http.Response) (float64, error) {
 	_, err := getResponseBody(response)
 	if err != nil {
 		return 0, err
@@ -105,29 +105,29 @@ func parseBinanceError(body map[string]interface{}) error {
 }
 
 func getOrderInfo(orderInfoJson map[string]interface{}) (exchangeapi.OrderInfo, error) {
-	id, isOkay := orderInfoJson[paramnames.OrderIdParam].(float64)
+	id, isOkay := orderInfoJson[pnames.OrderId].(float64)
 	if !isOkay {
 		return exchangeapi.OrderInfo{},
 			errors.New(fmt.Sprint("[binance-api-go.internal.parser] -> error while parsing a value of ",
-				paramnames.OrderIdParam, " key"))
+				pnames.OrderId, " key"))
 	}
 
-	status, isOkay := orderInfoJson[paramnames.StatusParam].(string)
+	status, isOkay := orderInfoJson[pnames.Status].(string)
 	if !isOkay {
 		return exchangeapi.OrderInfo{}, errors.New(fmt.Sprint("[binance-api-go.internal.parser] -> error while parsing a value of ",
-			paramnames.StatusParam, " key"))
+			pnames.Status, " key"))
 	}
 
-	orderType, isOkay := orderInfoJson[paramnames.TypeParam].(string)
+	orderType, isOkay := orderInfoJson[pnames.Type].(string)
 	if !isOkay {
 		return exchangeapi.OrderInfo{}, errors.New(fmt.Sprint("[binance-api-go.internal.parser] -> error while parsing a value of ",
-			paramnames.TypeParam, " key"))
+			pnames.Type, " key"))
 	}
 
-	priceStr, isOkay := orderInfoJson[paramnames.PriceParam].(string)
+	priceStr, isOkay := orderInfoJson[pnames.Price].(string)
 	if !isOkay {
 		return exchangeapi.OrderInfo{}, errors.New(fmt.Sprint("[binance-api-go.internal.parser] -> error while parsing a value of ",
-			paramnames.PriceParam, " key"))
+			pnames.Price, " key"))
 	}
 
 	// TODO Adopt quantity to limit orders
