@@ -6,14 +6,16 @@ import (
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
 	"net/url"
 	"strings"
 )
 
-func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
+func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Info, error) {
 	params := url.Values{}
-	params.Set(pnames.Symbol, fmt.Sprint(symbol.Base, symbol.Quote))
+	params.Set(pnames.Symbol, fmt.Sprint(assets.Base, assets.Quote))
 	queryStr := bncrequest.Sing(params, manager.apiKey.Secret)
 
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
@@ -32,7 +34,7 @@ func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) (
 	return bncresponse.ParseGetOrderList(resp)
 }
 
-func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
+func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (float64, error) {
 	requestBody := manager.createOrderRequestBody(&parameters)
 	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
 	if err != nil {
@@ -50,23 +52,23 @@ func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters)
 	return bncresponse.ParseSetOrder(response)
 }
 
-func (manager *ExchangeManager) createOrderRequestBody(params *exchangeapi.OrderParameters) string {
+func (manager *ExchangeManager) createOrderRequestBody(params *order.Parameters) string {
 	body := url.Values{}
-	body.Set(pnames.Symbol, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
+	body.Set(pnames.Symbol, fmt.Sprint(params.Assets.Base, params.Assets.Quote))
 	body.Set(pnames.Side, orderSideAlias[params.Side])
 	body.Set(pnames.Type, orderTypeAlias[params.Type])
 
-	if params.Type == exchangeapi.Limit {
+	if params.Type == order.Limit {
 		body.Set(pnames.TimeInForce, "GTC")
 		body.Set(pnames.Price, fmt.Sprint(params.Price))
 		body.Set(pnames.Quantity, fmt.Sprint(params.Quantity))
-	} else if params.Type == exchangeapi.Market {
+	} else if params.Type == order.Market {
 		body.Add(pnames.QuoteOrderQty, fmt.Sprint(params.Quantity))
 	}
 
 	return bncrequest.Sing(body, manager.apiKey.Secret)
 }
-func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
+func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, error) {
 	params := fmt.Sprintf("symbol=%s%s", symbol.Base, symbol.Quote)
 
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getPriceEndpoint, "?", params))
@@ -74,9 +76,9 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol)
 		return 0, err
 	}
 
-	return parser.ParserGetCurrentPrice(response)
+	return bncresponse.GetCurrentPrice(response)
 }
-func (manager *ExchangeManager) GetCandlestick(symbol exchangeapi.AssetsSymbol, interval string, limit int) (exchangeapi.Candlesticks, error) {
+func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) (exchangeapi.Candlesticks, error) {
 	params := fmt.Sprintf("symbol=%s%s&interval=%s&limit=%d", symbol.Base, symbol.Quote, interval, limit)
 
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getCandlestickEndpoint, "?", params))
@@ -95,5 +97,5 @@ func (manager *ExchangeManager) GetCandlestick(symbol exchangeapi.AssetsSymbol, 
 	//	return nil, err
 	//}
 
-	return parser.ParseGetCandlestick(response)
+	return bncresponse.GetCandlestick(response)
 }

@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/posipaka-trade/binance-api-go/pkg/binance"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"os"
 )
 
@@ -12,13 +14,13 @@ func main() {
 		Secret: os.Args[2],
 	})
 
-	_, err := mgr.SetOrder(exchangeapi.OrderParameters{
-		Symbol: exchangeapi.AssetsSymbol{
+	_, err := mgr.SetOrder(order.Parameters{
+		Assets: symbol.Assets{
 			Base:  "ETH",
 			Quote: "USDT",
 		},
-		Side:     exchangeapi.Buy,
-		Type:     exchangeapi.Market,
+		Side:     order.Buy,
+		Type:     order.Market,
 		Quantity: 12,
 	})
 
