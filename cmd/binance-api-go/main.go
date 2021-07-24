@@ -11,9 +11,14 @@ func main() {
 		Secret: "1x6qZCz7tJnvWFyJJ0d40nhPneA6SV8U9arMxXr5lPX68zETlnaKm5XJCuGl9Ljy", //os.Args[2],
 	})
 
-	_, err := mgr.GetOrdersList(exchangeapi.AssetsSymbol{
-		Base:  "ETH",
-		Quote: "BUSD",
+	_, err := mgr.SetOrder(exchangeapi.OrderParameters{
+		Symbol: exchangeapi.AssetsSymbol{
+			Base:  "ETH",
+			Quote: "USDT",
+		},
+		Side:     exchangeapi.Buy,
+		Type:     exchangeapi.Market,
+		Quantity: 12,
 	})
 
 	if err != nil {

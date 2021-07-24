@@ -16,8 +16,7 @@ func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) (
 	params.Set(pnames.Symbol, fmt.Sprint(symbol.Base, symbol.Quote))
 	queryStr := bncrequest.Sing(params, manager.apiKey.Secret)
 
-	orrdurl := fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr)
-	req, err := http.NewRequest(http.MethodGet, orrdurl, nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -48,22 +47,21 @@ func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters)
 	}
 
 	defer bncresponse.CloseBody(response)
-
 	return bncresponse.ParseSetOrder(response)
 }
 
 func (manager *ExchangeManager) createOrderRequestBody(params *exchangeapi.OrderParameters) string {
 	body := url.Values{}
-	body.Add(pnames.Symbol, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
-	body.Add(pnames.Side, orderSideAlias[params.Side])
-	body.Add(pnames.Type, orderTypeAlias[params.Type])
+	body.Set(pnames.Symbol, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
+	body.Set(pnames.Side, orderSideAlias[params.Side])
+	body.Set(pnames.Type, orderTypeAlias[params.Type])
 
 	if params.Type == exchangeapi.Limit {
-		body.Add(pnames.TimeInForce, "GTC")
-		body.Add(pnames.Price, fmt.Sprint(params.Price))
-		body.Add(pnames.Quantity, fmt.Sprint(params.Quantity))
+		body.Set(pnames.TimeInForce, "GTC")
+		body.Set(pnames.Price, fmt.Sprint(params.Price))
+		body.Set(pnames.Quantity, fmt.Sprint(params.Quantity))
 	} else if params.Type == exchangeapi.Market {
-		body.Add(pnames.Quantity, fmt.Sprint(params.Quantity))
+		body.Add(pnames.QuoteOrderQty, fmt.Sprint(params.Quantity))
 	}
 
 	return bncrequest.Sing(body, manager.apiKey.Secret)
