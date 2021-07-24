@@ -1,4 +1,0 @@
-[submodule "api/binance-spot-api-docs"]
-	path = api/binance-spot-api-docs
-	url = git@github.com:binance/binance-spot-api-docs.git
-	branch = master

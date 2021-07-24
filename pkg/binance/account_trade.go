@@ -2,42 +2,34 @@ package binance
 
 import (
 	"fmt"
-	"github.com/posipaka-trade/binance-api-go/internal/reqresp/paramnames"
-	"github.com/posipaka-trade/binance-api-go/internal/reqresp/parser"
-	"github.com/posipaka-trade/binance-api-go/internal/sha256encryptor"
+	"github.com/posipaka-trade/binance-api-go/internal/bncrequest"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
+	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"net/http"
 	"net/url"
 	"strings"
-	"time"
 )
 
 func (manager *ExchangeManager) GetOrdersList(symbol exchangeapi.AssetsSymbol) ([]exchangeapi.OrderInfo, error) {
-	params := fmt.Sprintf("%s=%s%s&%s=%d", paramnames.SymbolParam, symbol.Base, symbol.Quote,
-		paramnames.TimestampParam, time.Now().UnixNano()/int64(time.Millisecond))
-	params = fmt.Sprintf("%s&%s=%s", params, paramnames.SignatureParam,
-		sha256encryptor.EncryptMessage(params, manager.apiKey.Secret))
+	params := url.Values{}
+	params.Set(pnames.Symbol, fmt.Sprint(symbol.Base, symbol.Quote))
+	queryStr := bncrequest.Sing(params, manager.apiKey.Secret)
 
-	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, allOrdersEndpoint, "?", params), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
 	if err != nil {
 		return nil, err
 	}
 
-	request.Header.Set("X-MBX-APIKEY", manager.apiKey.Key)
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	bncrequest.SetHeader(req, manager.apiKey.Key)
 
-	response, err := manager.client.Do(request)
+	resp, err := manager.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
 
-	defer func() {
-		if err := response.Body.Close(); err != nil {
-			panic(err.Error())
-		}
-	}()
-
-	return parser.ParseGetOrderListResponse(response)
+	defer bncresponse.CloseBody(resp)
+	return bncresponse.ParseGetOrderList(resp)
 }
 
 func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters) (float64, error) {
@@ -47,39 +39,32 @@ func (manager *ExchangeManager) SetOrder(parameters exchangeapi.OrderParameters)
 		return 0, err
 	}
 
-	request.Header.Set("X-MBX-APIKEY", manager.apiKey.Key)
-	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	bncrequest.SetHeader(request, manager.apiKey.Key)
 
 	response, err := manager.client.Do(request)
 	if err != nil {
 		return 0, err
 	}
 
-	defer func() {
-		if err := response.Body.Close(); err != nil {
-			panic(err.Error())
-		}
-	}()
-
-	return parser.ParseSetOrderResponse(response)
+	defer bncresponse.CloseBody(response)
+	return bncresponse.ParseSetOrder(response)
 }
 
 func (manager *ExchangeManager) createOrderRequestBody(params *exchangeapi.OrderParameters) string {
 	body := url.Values{}
-	body.Add(paramnames.SymbolParam, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
-	body.Add(paramnames.SideParam, orderSideAlias[params.Side])
-	body.Add(paramnames.TypeParam, orderTypeAlias[params.Type])
+	body.Set(pnames.Symbol, fmt.Sprint(params.Symbol.Base, params.Symbol.Quote))
+	body.Set(pnames.Side, orderSideAlias[params.Side])
+	body.Set(pnames.Type, orderTypeAlias[params.Type])
 
 	if params.Type == exchangeapi.Limit {
-		body.Add(paramnames.TimeInForceParam, "GTC")
-		body.Add(paramnames.PriceParam, fmt.Sprint(params.Price))
-		body.Add(paramnames.QuantityParam, fmt.Sprint(params.Quantity))
+		body.Set(pnames.TimeInForce, "GTC")
+		body.Set(pnames.Price, fmt.Sprint(params.Price))
+		body.Set(pnames.Quantity, fmt.Sprint(params.Quantity))
 	} else if params.Type == exchangeapi.Market {
-		body.Add(paramnames.QuantityParam, fmt.Sprint(params.Quantity))
+		body.Add(pnames.QuoteOrderQty, fmt.Sprint(params.Quantity))
 	}
 
-	body.Add(paramnames.SignatureParam, sha256encryptor.EncryptMessage(body.Encode(), manager.apiKey.Secret))
-	return body.Encode()
+	return bncrequest.Sing(body, manager.apiKey.Secret)
 }
 func (manager *ExchangeManager) GetCurrentPrice(symbol exchangeapi.AssetsSymbol) (float64, error) {
 	params := fmt.Sprintf("symbol=%s%s", symbol.Base, symbol.Quote)
