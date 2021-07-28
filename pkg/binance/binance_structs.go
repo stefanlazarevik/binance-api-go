@@ -2,6 +2,7 @@ package binance
 
 import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"net/http"
 )
 
@@ -20,31 +21,20 @@ func New(key exchangeapi.ApiKey) *ExchangeManager {
 	}
 }
 
-var orderSideAlias = map[exchangeapi.OrderSide]string{
-	exchangeapi.Buy:  "BUY",
-	exchangeapi.Sell: "SELL",
+var orderSideAlias = map[order.Side]string{
+	order.Buy:  "BUY",
+	order.Sell: "SELL",
 }
 
-var orderTypeAlias = map[exchangeapi.OrderType]string{
-	exchangeapi.Limit:  "LIMIT",
-	exchangeapi.Market: "MARKET",
+var orderTypeAlias = map[order.Type]string{
+	order.Limit:  "LIMIT",
+	order.Market: "MARKET",
 }
-
-// binance parametersValue
-const (
-	symbolParam      = "symbol"
-	sideParam        = "side"
-	typeParam        = "type"
-	quantityParam    = "quantity"
-	priceParam       = "price"
-	timeInForceParam = "timeInForce"
-	totalParams      = "totalParams"
-)
 
 // binance api endpoints
 const (
 	newOrderEndpoint       = "/api/v3/order"
-	allOrdersEndpoint      = "/api/v3/allOrders"
+	openOrdersEndpoint     = "/api/v3/openOrders"
 	getPriceEndpoint       = "/api/v3/ticker/price"
 	getCandlestickEndpoint = "/api/v3/klines"
 )
