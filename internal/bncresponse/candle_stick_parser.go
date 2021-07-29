@@ -1,41 +1,71 @@
 package bncresponse
 
 import (
-	"encoding/json"
+	"errors"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
-	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 )
 
-func GetCandlestick(response *http.Response) (exchangeapi.Candlestick, error) {
-	_, err := getResponseBody(response)
+func GetCandlestick(response *http.Response) ([]exchangeapi.Candlestick, error) {
+	bodyI, err := getResponseBody(response)
 	if err != nil {
-		return exchangeapi.Candlestick{}, err
-	}
-	body, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		return exchangeapi.Candlestick{}, err
-	}
-	//var candleData Candlesticks
-	var c exchangeapi.Candlestick
-	var v []interface{}
-	if err := json.Unmarshal(body, &v); err != nil {
-		return exchangeapi.Candlestick{}, err
+		return nil, err
 	}
 
-	// TODO rename field according to new struct
-	//c.OpenTime, _ = v[0].(int64)
-	//c.Open, _ = v[1].(string)
-	//c.High, _ = v[2].(string)
-	//c.Low, _ = v[3].(string)
-	//c.Close, _ = v[4].(string)
-	//c.Volume, _ = v[5].(string)
-	//c.CloseTime, _ = v[6].(int64)
-	//c.QuoteAssetVolume, _ = v[7].(string)
-	//c.NumberOfTrade, _ = v[8].(int64)
-	//c.TakerBuyBaseAssetVolume, _ = v[9].(string)
-	//c.TakerBuyQuoteAssetVolume, _ = v[10].(string)
-	//c.Ignore, _ = v[11].(string)
+	g := bodyI.([]interface{})
+	var candleStickArr []exchangeapi.Candlestick
 
-	return c, nil
+	for i := 0; i < len(g); i++ {
+
+		v := g[i].([]interface{})
+		var c exchangeapi.Candlestick
+
+		openPrice, err := strconv.ParseFloat(v[1].(string), 64)
+		if err != nil {
+			return nil, errors.New("[bncresponse] -> error when parsing openPrice to float64")
+		}
+		maxPrice, err := strconv.ParseFloat(v[2].(string), 64)
+		if err != nil {
+			return nil, errors.New("[bncresponse] -> error when parsing maxPrice to float64")
+		}
+		minPrice, err := strconv.ParseFloat(v[3].(string), 64)
+		if err != nil {
+			return nil, errors.New("[bncresponse] -> error when parsing minPrice to float64")
+		}
+		closePrice, err := strconv.ParseFloat(v[4].(string), 64)
+		if err != nil {
+			return nil, errors.New("[bncresponse] -> error when parsing closePrice to float64")
+		}
+		volume, err := strconv.ParseFloat(v[5].(string), 64)
+		if err != nil {
+			return nil, errors.New("[bncresponse] -> error when parsing volume to float64")
+		}
+		openTimeF, isOk := v[0].(float64)
+		if !isOk {
+			return nil, errors.New("[bncresponse] -> error when parsing openTime to float64")
+		}
+		closeTimeF, isOk := v[6].(float64)
+		if !isOk {
+			return nil, errors.New("[bncresponse] -> error when parsing closeTime to float64")
+		}
+		tradesNumber, isOk := v[8].(float64)
+		if !isOk {
+			return nil, errors.New("[bncresponse] -> error when parsing tradesNumber to float64")
+		}
+
+		c.OpenTime = time.Unix(int64(openTimeF), 999999999)
+		c.OpenPrice = openPrice
+		c.MaxPrice = maxPrice
+		c.MinPrice = minPrice
+		c.ClosePrice = closePrice
+		c.Volume = volume
+		c.CloseTime = time.Unix(int64(closeTimeF), 999999999)
+		c.TradesNumber = tradesNumber
+
+		candleStickArr = append(candleStickArr, c)
+	}
+
+	return candleStickArr, nil
 }

@@ -22,8 +22,16 @@ func getResponseBody(response *http.Response) (interface{}, error) {
 		return nil, err
 	}
 
-	if respondBody[0] == '[' && respondBody[len(respondBody)-1] == ']' {
+	if respondBody[0] == '[' && respondBody[len(respondBody)-1] == ']' && respondBody[1] != '[' {
 		var body []map[string]interface{}
+		err = json.Unmarshal(respondBody, &body)
+		if err != nil {
+			return nil, err
+		}
+
+		return body, err
+	} else if respondBody[0] == '[' && respondBody[1] == '[' {
+		var body []interface{}
 		err = json.Unmarshal(respondBody, &body)
 		if err != nil {
 			return nil, err

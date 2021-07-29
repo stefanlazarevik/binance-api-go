@@ -78,24 +78,13 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 
 	return bncresponse.GetCurrentPrice(response)
 }
-func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) (exchangeapi.Candlesticks, error) {
+func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) ([]exchangeapi.Candlestick, error) {
 	params := fmt.Sprintf("symbol=%s%s&interval=%s&limit=%d", symbol.Base, symbol.Quote, interval, limit)
 
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getCandlestickEndpoint, "?", params))
 	if err != nil {
-		return exchangeapi.Candlesticks{}, err
+		return nil, err
 	}
-
-	//body, err := ioutil.ReadAll(response.Body)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//var candleData []Candlesticks
-	//
-	//err = json.Unmarshal(body, &candleData)
-	//if err != nil {
-	//	return nil, err
-	//}
 
 	return bncresponse.GetCandlestick(response)
 }

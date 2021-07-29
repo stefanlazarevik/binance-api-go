@@ -1,7 +1,8 @@
 package bncresponse
 
 import (
-	"encoding/json"
+	"errors"
+	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"net/http"
 	"strconv"
 )
@@ -12,21 +13,12 @@ func GetCurrentPrice(response *http.Response) (float64, error) {
 		return 0, err
 	}
 
-	body, err := json.Marshal(bodyI)
-	if err != nil {
-		return 0, err
-	}
+	priceI := bodyI.(map[string]interface{})
 
-	pricesMap := map[string]string{}
-	err = json.Unmarshal(body, &pricesMap)
+	priceStr := priceI[pnames.Price]
+	price, err := strconv.ParseFloat(priceStr.(string), 64)
 	if err != nil {
-		return 0, err
-	}
-
-	priceStr := pricesMap["price"]
-	price, err := strconv.ParseFloat(priceStr, 64)
-	if err != nil {
-		return 0, err
+		return 0, errors.New("[bncresponse] -> error when parsing priceStr to float64")
 	}
 	return price, nil
 }
