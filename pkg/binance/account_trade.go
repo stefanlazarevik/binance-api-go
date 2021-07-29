@@ -75,7 +75,7 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	if err != nil {
 		return 0, err
 	}
-
+	defer bncresponse.CloseBody(response)
 	return bncresponse.GetCurrentPrice(response)
 }
 func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) ([]exchangeapi.Candlestick, error) {
@@ -86,5 +86,6 @@ func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval st
 		return nil, err
 	}
 
+	defer bncresponse.CloseBody(response)
 	return bncresponse.GetCandlestick(response)
 }

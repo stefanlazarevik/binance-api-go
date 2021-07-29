@@ -13,7 +13,10 @@ func GetCurrentPrice(response *http.Response) (float64, error) {
 		return 0, err
 	}
 
-	priceI := bodyI.(map[string]interface{})
+	priceI, isOk := bodyI.(map[string]interface{})
+	if !isOk {
+		return 0, errors.New("[bncresponse] -> error when casting bodyI to priceI")
+	}
 
 	priceStr := priceI[pnames.Price]
 	price, err := strconv.ParseFloat(priceStr.(string), 64)

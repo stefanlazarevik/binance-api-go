@@ -14,12 +14,18 @@ func GetCandlestick(response *http.Response) ([]exchangeapi.Candlestick, error) 
 		return nil, err
 	}
 
-	g := bodyI.([]interface{})
+	g, isOk := bodyI.([]interface{})
+	if !isOk {
+		return nil, errors.New("[bncresponse] -> error when casting bodyI to g")
+	}
 	var candleStickArr []exchangeapi.Candlestick
 
 	for i := 0; i < len(g); i++ {
 
-		v := g[i].([]interface{})
+		v, isOk := g[i].([]interface{})
+		if !isOk {
+			return nil, errors.New("[bncresponse] -> error when casting g to v")
+		}
 		var c exchangeapi.Candlestick
 
 		openPrice, err := strconv.ParseFloat(v[1].(string), 64)
@@ -50,19 +56,19 @@ func GetCandlestick(response *http.Response) ([]exchangeapi.Candlestick, error) 
 		if !isOk {
 			return nil, errors.New("[bncresponse] -> error when parsing closeTime to float64")
 		}
-		tradesNumber, isOk := v[8].(float64)
+		tradesNumberF, isOk := v[8].(float64)
 		if !isOk {
 			return nil, errors.New("[bncresponse] -> error when parsing tradesNumber to float64")
 		}
 
-		c.OpenTime = time.Unix(int64(openTimeF), 999999999)
+		c.OpenTime = time.Unix(int64(openTimeF/1000), 0)
 		c.OpenPrice = openPrice
 		c.MaxPrice = maxPrice
 		c.MinPrice = minPrice
 		c.ClosePrice = closePrice
 		c.Volume = volume
-		c.CloseTime = time.Unix(int64(closeTimeF), 999999999)
-		c.TradesNumber = tradesNumber
+		c.CloseTime = time.Unix(int64(closeTimeF/1000), 0)
+		c.TradesNumber = int(tradesNumberF)
 
 		candleStickArr = append(candleStickArr, c)
 	}

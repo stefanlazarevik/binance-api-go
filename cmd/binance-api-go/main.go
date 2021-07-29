@@ -26,7 +26,7 @@ func main() {
 	//	Base: "ETH",
 	//	Quote: "USDT"})
 	//fmt.Println(price)
-	candleStick, err := mgr.GetCandlestick(symbol.Assets{Base: "ETH", Quote: "USDT"}, "1h", 8)
+	candleStick, err := mgr.GetCandlestick(symbol.Assets{Base: "ETH", Quote: "USDT"}, "1h", 1)
 	fmt.Println(candleStick)
 	if err != nil {
 		panic(err.Error())
