@@ -22,10 +22,10 @@ func main() {
 	//	Type:     exchangeapi.Market,
 	//	Quantity: 12,
 	//})
-	//price , err := mgr.GetCurrentPrice(symbol.Assets{
-	//	Base: "ETH",
-	//	Quote: "USDT"})
-	//fmt.Println(price)
+	price, err := mgr.GetCurrentPrice(symbol.Assets{
+		Base:  "ETH",
+		Quote: "USDT"})
+	fmt.Println(price)
 	candleStick, err := mgr.GetCandlestick(symbol.Assets{Base: "ETH", Quote: "USDT"}, "1h", 1)
 	fmt.Println(candleStick)
 	if err != nil {
