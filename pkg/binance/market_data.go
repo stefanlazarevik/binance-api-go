@@ -38,5 +38,5 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 	}
 
 	defer bncresponse.CloseBody(response)
-	return
+	return bncresponse.GetServerTime(response)
 }
