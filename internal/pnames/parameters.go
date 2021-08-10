@@ -13,4 +13,5 @@ const (
 	TimeInForce   = "timeInForce"
 	Signature     = "signature"
 	Timestamp     = "timestamp"
+	ServerTime    = "serverTime"
 )

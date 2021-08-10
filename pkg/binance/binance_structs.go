@@ -37,6 +37,5 @@ const (
 	openOrdersEndpoint     = "/api/v3/openOrders"
 	getPriceEndpoint       = "/api/v3/ticker/price"
 	getCandlestickEndpoint = "/api/v3/klines"
+	getServerTimeEndpoint  = "/api/v3/time"
 )
-
-const goodTilCanceled = "GTC"
