@@ -2,10 +2,11 @@ package pnames
 
 // binance cmn parameters values
 const (
-	Filters    = "filters"
-	Signature  = "signature"
-	Timestamp  = "timestamp"
-	ServerTime = "serverTime"
+	Filters       = "filters"
+	Signature     = "signature"
+	Timestamp     = "timestamp"
+	ServerTime    = "serverTime"
+	ReceiveWindow = "recvWindow"
 )
 
 // types
@@ -19,8 +20,11 @@ const (
 	Symbol  = "symbol"
 	Symbols = "symbols"
 
-	BaseAsset  = "baseAsset"
-	QuoteAsset = "quoteAsset"
+	BaseAsset          = "baseAsset"
+	BaseAssetPrecision = "baseAssetPrecision"
+
+	QuoteAsset          = "quoteAsset"
+	QuoteAssetPrecision = "quoteAssetPrecision"
 )
 
 // price info

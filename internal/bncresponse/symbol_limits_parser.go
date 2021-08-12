@@ -34,17 +34,49 @@ func GetSymbolLimits(response *http.Response) (symbol.Limits, error) {
 		return symbol.Limits{}, err
 	}
 
-	limits.Assets.Base, isOk = symbolInfo[pnames.BaseAsset].(string)
-	if !isOk {
-		return symbol.Limits{}, errors.New("[bncresponse] -> failed base asset parsing")
+	limits.Assets, err = parseAsset(symbolInfo)
+	if err != nil {
+		return symbol.Limits{}, err
 	}
 
-	limits.Assets.Quote, isOk = symbolInfo[pnames.QuoteAsset].(string)
-	if !isOk {
-		return symbol.Limits{}, errors.New("[bncresponse] -> failed quote asset parsing")
+	limits, err = parseSymbolPrecision(symbolInfo, limits)
+	if err != nil {
+		return symbol.Limits{}, err
 	}
 
 	return limits, nil
+}
+
+func parseSymbolPrecision(symbolInfo map[string]interface{}, limits symbol.Limits) (symbol.Limits, error) {
+	basePrecision, isOkay := symbolInfo[pnames.BaseAssetPrecision].(float64)
+	if !isOkay {
+		return limits, errors.New("[bncresponse] -> failed base asset parsing")
+	}
+
+	quotePrecision, isOkay := symbolInfo[pnames.QuoteAssetPrecision].(float64)
+	if !isOkay {
+		return limits, errors.New("[bncresponse] -> failed base asset parsing")
+	}
+
+	limits.Base.Precision = int(basePrecision)
+	limits.Quote.Precision = int(quotePrecision)
+	return limits, nil
+}
+
+func parseAsset(symbolInfo map[string]interface{}) (symbol.Assets, error) {
+	var assets symbol.Assets
+	var isOkay bool
+	assets.Base, isOkay = symbolInfo[pnames.BaseAsset].(string)
+	if !isOkay {
+		return symbol.Assets{}, errors.New("[bncresponse] -> failed base asset parsing")
+	}
+
+	assets.Quote, isOkay = symbolInfo[pnames.QuoteAsset].(string)
+	if !isOkay {
+		return symbol.Assets{}, errors.New("[bncresponse] -> failed quote asset parsing")
+	}
+
+	return assets, nil
 }
 
 func parseSymbolInfo(bodyI interface{}) (map[string]interface{}, error) {
@@ -92,6 +124,7 @@ func parseSymbolFilters(filters []interface{}) (symbol.Limits, error) {
 			}
 		}
 	}
+
 	return limits, nil
 }
 

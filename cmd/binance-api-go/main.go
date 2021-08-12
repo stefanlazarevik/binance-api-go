@@ -2,26 +2,39 @@ package main
 
 import (
 	"github.com/posipaka-trade/binance-api-go/pkg/binance"
+	cmn "github.com/posipaka-trade/posipaka-trade-cmn"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"os"
 )
 
 func main() {
+	cmn.InitLoggers("binance-api-go")
 	mgr := binance.New(exchangeapi.ApiKey{
 		Key:    os.Args[1],
 		Secret: os.Args[2],
 	})
 
-	//_, err := mgr.SetOrder(exchangeapi.OrderParameters{
-	//	Symbol: exchangeapi.AssetsSymbol{
-	//		Base:  "ETH",
-	//		Quote: "USDT",
-	//	},
-	//	Side:     exchangeapi.Buy,
-	//	Type:     exchangeapi.Market,
-	//	Quantity: 12,
-	//})
+	limits, err := mgr.GetSymbolLimits(symbol.Assets{
+		Base:  "ETH",
+		Quote: "USDT",
+	})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	mgr.AddLimits(limits)
+	_, err = mgr.SetOrder(order.Parameters{
+		Assets: symbol.Assets{
+			Base:  "ETH",
+			Quote: "USDT",
+		},
+		Price:    3120.58789214685,
+		Side:     order.Buy,
+		Type:     order.Limit,
+		Quantity: 0.00473815,
+	})
 	//price, err := mgr.GetCurrentPrice(symbol.Assets{
 	//	Base:  "ETH",
 	//	Quote: "USDT"})
@@ -32,10 +45,10 @@ func main() {
 	//	panic(err.Error())
 	//}
 
-	_, err := mgr.GetSymbolLimits(symbol.Assets{
-		Base:  "ETH",
-		Quote: "USDT",
-	})
+	//_, err := mgr.GetSymbolLimits(symbol.Assets{
+	//	Base:  "ETH",
+	//	Quote: "USDT",
+	//})
 	if err != nil {
 		panic(err.Error())
 	}

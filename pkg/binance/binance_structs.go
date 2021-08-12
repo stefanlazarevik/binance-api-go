@@ -3,15 +3,21 @@ package binance
 import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
 )
 
 const baseUrl = "https://api.binance.com"
 
 type ExchangeManager struct {
-	apiKey exchangeapi.ApiKey
+	symbolsLimits []symbol.Limits
+	apiKey        exchangeapi.ApiKey
 
 	client *http.Client
+}
+
+func (manager *ExchangeManager) AddLimits(limits symbol.Limits) {
+	manager.symbolsLimits = append(manager.symbolsLimits, limits)
 }
 
 func New(key exchangeapi.ApiKey) *ExchangeManager {
