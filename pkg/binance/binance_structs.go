@@ -38,4 +38,5 @@ const (
 	getPriceEndpoint       = "/api/v3/ticker/price"
 	getCandlestickEndpoint = "/api/v3/klines"
 	getServerTimeEndpoint  = "/api/v3/time"
+	exchangeInfoEndpoint   = "/api/v3/exchangeInfo"
 )

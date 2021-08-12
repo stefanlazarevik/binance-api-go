@@ -40,3 +40,13 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 	defer bncresponse.CloseBody(response)
 	return bncresponse.GetServerTime(response)
 }
+
+func (manager *ExchangeManager) GetSymbolLimits(assets symbol.Assets) (symbol.Limits, error) {
+	response, err := manager.client.Get(fmt.Sprint(baseUrl, exchangeInfoEndpoint, "?symbol=", assets.Base, assets.Quote))
+	if err != nil {
+		return symbol.Limits{}, err
+	}
+
+	defer bncresponse.CloseBody(response)
+	return bncresponse.GetSymbolLimits(response)
+}
