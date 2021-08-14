@@ -76,9 +76,9 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 	return bncrequest.Sign(body, manager.apiKey.Secret)
 }
 
-func (manager *ExchangeManager) BalancesInfo(quote string) (float64, error) {
-
-	signature := bncrequest.Sign(make(url.Values, 0), manager.apiKey.Secret)
+func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
+	urk := make(url.Values, 0)
+	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
 	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, accountInfoEndpoint, "?", signature), nil)
 	if err != nil {
 		return 0, err
@@ -92,5 +92,5 @@ func (manager *ExchangeManager) BalancesInfo(quote string) (float64, error) {
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.ParseBalancesInfo(response, quote)
+	return bncresponse.ParseBalancesInfo(response, asset)
 }
