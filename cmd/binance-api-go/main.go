@@ -49,7 +49,7 @@ func main() {
 	//	Base:  "ETH",
 	//	Quote: "USDT",
 	//})
-	balance, err := mgr.BalancesInfo("USDT")
+	balance, err := mgr.BalancesInfo("BUSD")
 	fmt.Println(balance)
 	if err != nil {
 		panic(err.Error())

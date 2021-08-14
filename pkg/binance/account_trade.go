@@ -77,8 +77,8 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 }
 
 func (manager *ExchangeManager) BalancesInfo(quote string) (float64, error) {
-	urk := make(url.Values, 0)
-	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
+
+	signature := bncrequest.Sign(make(url.Values, 0), manager.apiKey.Secret)
 	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, accountInfoEndpoint, "?", signature), nil)
 	if err != nil {
 		return 0, err
