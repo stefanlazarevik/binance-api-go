@@ -54,3 +54,11 @@ const (
 	QuoteOrderQty = "quoteOrderQty"
 	TimeInForce   = "timeInForce"
 )
+
+//balances info
+
+const (
+	Balances = "balances"
+	Asset    = "asset"
+	Free     = "free"
+)
