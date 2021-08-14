@@ -92,5 +92,5 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.ParseGetAssetBalance(response, quote)
+	return bncresponse.ParseBalancesInfo(response, quote)
 }
