@@ -5,6 +5,7 @@ import (
 	"github.com/posipaka-trade/binance-api-go/pkg/binance"
 	cmn "github.com/posipaka-trade/posipaka-trade-cmn"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"os"
 )
 
@@ -34,10 +35,10 @@ func main() {
 	//	Type:     order.Limit,
 	//	Quantity: 0.00473815,
 	//})
-	//price, err := mgr.GetCurrentPrice(symbol.Assets{
-	//	Base:  "ETH",
-	//	Quote: "USDT"})
-	//fmt.Println(price)
+	price, err := mgr.GetCurrentPrice(symbol.Assets{
+		Base:  "ETH",
+		Quote: "USDT"})
+	fmt.Println(price)
 	//candleStick, err := mgr.GetCandlestick(symbol.Assets{Base: "ETH", Quote: "USDT"}, "1h", 1)
 	//fmt.Println(candleStick)
 	//if err != nil {

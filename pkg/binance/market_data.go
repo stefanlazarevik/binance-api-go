@@ -11,7 +11,6 @@ import (
 
 func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, error) {
 	params := fmt.Sprintf("symbol=%s%s", symbol.Base, symbol.Quote)
-
 	response, err := manager.client.Get(fmt.Sprint(baseUrl, getPriceEndpoint, "?", params))
 	if err != nil {
 		return 0, err
