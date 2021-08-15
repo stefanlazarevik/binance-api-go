@@ -45,4 +45,5 @@ const (
 	getCandlestickEndpoint = "/api/v3/klines"
 	getServerTimeEndpoint  = "/api/v3/time"
 	exchangeInfoEndpoint   = "/api/v3/exchangeInfo"
+	accountInfoEndpoint    = "/api/v3/account"
 )

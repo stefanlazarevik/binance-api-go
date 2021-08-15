@@ -15,7 +15,7 @@ import (
 func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Info, error) {
 	params := url.Values{}
 	params.Set(pnames.Symbol, fmt.Sprint(assets.Base, assets.Quote))
-	queryStr := bncrequest.Sing(params, manager.apiKey.Secret)
+	queryStr := bncrequest.Sign(params, manager.apiKey.Secret)
 
 	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
 	if err != nil {
@@ -73,5 +73,24 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 		}
 	}
 
-	return bncrequest.Sing(body, manager.apiKey.Secret)
+	return bncrequest.Sign(body, manager.apiKey.Secret)
+}
+
+func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
+	urk := make(url.Values, 0)
+	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, accountInfoEndpoint, "?", signature), nil)
+	if err != nil {
+		return 0, err
+	}
+
+	bncrequest.SetHeader(request, manager.apiKey.Key)
+
+	response, err := manager.client.Do(request)
+	if err != nil {
+		return 0, err
+	}
+
+	defer bncresponse.CloseBody(response)
+	return bncresponse.ParseBalancesInfo(response, asset)
 }

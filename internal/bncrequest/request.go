@@ -16,7 +16,7 @@ func SetHeader(req *http.Request, key string) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 }
 
-func Sing(data url.Values, key string) string {
+func Sign(data url.Values, key string) string {
 	timestampMs := time.Now().UnixNano() / int64(time.Millisecond)
 	data.Set(pnames.Timestamp, fmt.Sprint(timestampMs))
 
