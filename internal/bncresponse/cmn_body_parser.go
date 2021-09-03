@@ -8,7 +8,13 @@ import (
 	"net/http"
 )
 
-func getResponseBody(response *http.Response) (interface{}, error) {
+// responses json keys
+const (
+	codeKey = "code" // error code
+	msgKey  = "msg"  // error message
+)
+
+func GetResponseBody(response *http.Response) (interface{}, error) {
 	if response.StatusCode/100 != 2 && response.Body == nil {
 		return nil, &exchangeapi.ExchangeError{
 			Type:    exchangeapi.HttpErr,

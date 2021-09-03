@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/bncrequest"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse/acctrade"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
@@ -30,7 +31,7 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 	}
 
 	defer bncresponse.CloseBody(resp)
-	return bncresponse.ParseGetOrderList(resp)
+	return acctrade.ParseGetOrderList(resp)
 }
 
 // Set LIMIT or MARKET order on exchange.
@@ -51,7 +52,7 @@ func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (float64, 
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.ParseSetOrder(response)
+	return acctrade.ParseSetOrder(response)
 }
 
 func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) string {
@@ -92,5 +93,5 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.ParseBalancesInfo(response, asset)
+	return acctrade.ParseBalancesInfo(response, asset)
 }

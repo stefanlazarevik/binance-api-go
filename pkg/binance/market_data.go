@@ -3,6 +3,7 @@ package binance
 import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse/mktdata"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
@@ -16,7 +17,7 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 		return 0, err
 	}
 	defer bncresponse.CloseBody(response)
-	return bncresponse.GetCurrentPrice(response)
+	return mktdata.GetCurrentPrice(response)
 }
 
 func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) ([]exchangeapi.Candlestick, error) {
@@ -28,7 +29,7 @@ func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval st
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.GetCandlestick(response)
+	return mktdata.GetCandlestick(response)
 }
 
 func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
@@ -38,7 +39,7 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.GetServerTime(response)
+	return mktdata.GetServerTime(response)
 }
 
 func (manager *ExchangeManager) GetSymbolLimits(assets symbol.Assets) (symbol.Limits, error) {
@@ -49,5 +50,5 @@ func (manager *ExchangeManager) GetSymbolLimits(assets symbol.Assets) (symbol.Li
 	}
 
 	defer bncresponse.CloseBody(response)
-	return bncresponse.GetSymbolLimits(response)
+	return mktdata.GetSymbolLimits(response)
 }

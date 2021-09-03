@@ -1,22 +1,17 @@
-package bncresponse
+package acctrade
 
 import (
 	"errors"
 	"fmt"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"net/http"
 	"strconv"
 )
 
-// responses json keys
-const (
-	codeKey = "code" // error code
-	msgKey  = "msg"  // error message
-)
-
 func ParseGetOrderList(response *http.Response) ([]order.Info, error) {
-	bodyI, err := getResponseBody(response)
+	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return nil, err
 	}

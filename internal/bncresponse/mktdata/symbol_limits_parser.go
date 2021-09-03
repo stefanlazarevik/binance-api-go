@@ -1,7 +1,8 @@
-package bncresponse
+package mktdata
 
 import (
 	"errors"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
@@ -14,7 +15,7 @@ const (
 )
 
 func GetSymbolLimits(response *http.Response) (symbol.Limits, error) {
-	bodyI, err := getResponseBody(response)
+	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return symbol.Limits{}, err
 	}
@@ -26,7 +27,7 @@ func GetSymbolLimits(response *http.Response) (symbol.Limits, error) {
 
 	filters, isOk := symbolInfo[pnames.Filters].([]interface{})
 	if !isOk {
-		return symbol.Limits{}, errors.New("[bncresponse] -> filters tree casting failed")
+		return symbol.Limits{}, errors.New("[mktdata] -> filters tree casting failed")
 	}
 
 	limits, err := parseSymbolFilters(filters)
@@ -50,12 +51,12 @@ func GetSymbolLimits(response *http.Response) (symbol.Limits, error) {
 func parseSymbolPrecision(symbolInfo map[string]interface{}, limits symbol.Limits) (symbol.Limits, error) {
 	basePrecision, isOkay := symbolInfo[pnames.BaseAssetPrecision].(float64)
 	if !isOkay {
-		return limits, errors.New("[bncresponse] -> failed base asset parsing")
+		return limits, errors.New("[mktdata] -> failed base asset parsing")
 	}
 
 	quotePrecision, isOkay := symbolInfo[pnames.QuoteAssetPrecision].(float64)
 	if !isOkay {
-		return limits, errors.New("[bncresponse] -> failed base asset parsing")
+		return limits, errors.New("[mktdata] -> failed base asset parsing")
 	}
 
 	limits.Base.Precision = int(basePrecision)
@@ -68,12 +69,12 @@ func parseAsset(symbolInfo map[string]interface{}) (symbol.Assets, error) {
 	var isOkay bool
 	assets.Base, isOkay = symbolInfo[pnames.BaseAsset].(string)
 	if !isOkay {
-		return symbol.Assets{}, errors.New("[bncresponse] -> failed base asset parsing")
+		return symbol.Assets{}, errors.New("[mktdata] -> failed base asset parsing")
 	}
 
 	assets.Quote, isOkay = symbolInfo[pnames.QuoteAsset].(string)
 	if !isOkay {
-		return symbol.Assets{}, errors.New("[bncresponse] -> failed quote asset parsing")
+		return symbol.Assets{}, errors.New("[mktdata] -> failed quote asset parsing")
 	}
 
 	return assets, nil
@@ -82,21 +83,21 @@ func parseAsset(symbolInfo map[string]interface{}) (symbol.Assets, error) {
 func parseSymbolInfo(bodyI interface{}) (map[string]interface{}, error) {
 	body, isOk := bodyI.(map[string]interface{})
 	if !isOk {
-		return nil, errors.New("[bncresponse] -> error when casting bodyI to timeI")
+		return nil, errors.New("[mktdata] -> error when casting bodyI to timeI")
 	}
 
 	symbols, isOk := body[pnames.Symbols].([]interface{})
 	if !isOk {
-		return nil, errors.New("[bncresponse] -> symbols tree not found in exchange information")
+		return nil, errors.New("[mktdata] -> symbols tree not found in exchange information")
 	}
 
 	if len(symbols) == 0 {
-		return nil, errors.New("[bncresponse] -> no symbols were returned by exchange information response")
+		return nil, errors.New("[mktdata] -> no symbols were returned by exchange information response")
 	}
 
 	symbolInfo, isOk := symbols[0].(map[string]interface{})
 	if !isOk {
-		return nil, errors.New("[bncresponse] -> failed to cast symbol to key/value pairs")
+		return nil, errors.New("[mktdata] -> failed to cast symbol to key/value pairs")
 	}
 
 	return symbolInfo, nil
@@ -131,33 +132,33 @@ func parseSymbolFilters(filters []interface{}) (symbol.Limits, error) {
 func parsePriceFilterJson(filter map[string]interface{}, limits symbol.Limits) (symbol.Limits, error) {
 	minPrice, isOkay := filter[pnames.MinPrice].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> min price for price filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> min price for price filter not parsed")
 	}
 
 	maxPrice, isOkay := filter[pnames.MaxPrice].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> max price for price filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> max price for price filter not parsed")
 	}
 
 	tickSize, isOkay := filter[pnames.TickSize].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> tick size for price filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> tick size for price filter not parsed")
 	}
 
 	var err error
 	limits.Price.MinSize, err = strconv.ParseFloat(minPrice, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> MinPrice. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> MinPrice. " + err.Error())
 	}
 
 	limits.Price.MaxSize, err = strconv.ParseFloat(maxPrice, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> MaxPrice. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> MaxPrice. " + err.Error())
 	}
 
 	limits.Price.Increment, err = strconv.ParseFloat(tickSize, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> tickSize. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> tickSize. " + err.Error())
 	}
 
 	return limits, nil
@@ -166,33 +167,33 @@ func parsePriceFilterJson(filter map[string]interface{}, limits symbol.Limits) (
 func parseLotSize(filter map[string]interface{}, limits symbol.Limits) (symbol.Limits, error) {
 	minQty, isOkay := filter[pnames.MinQuantity].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> min quantity filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> min quantity filter not parsed")
 	}
 
 	maxQty, isOkay := filter[pnames.MaxQuantity].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> max quantity filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> max quantity filter not parsed")
 	}
 
 	stepSize, isOkay := filter[pnames.StepSize].(string)
 	if !isOkay {
-		return symbol.Limits{}, errors.New("[bncresponse] -> quantity step size filter not parsed")
+		return symbol.Limits{}, errors.New("[mktdata] -> quantity step size filter not parsed")
 	}
 
 	var err error
 	limits.Base.MinSize, err = strconv.ParseFloat(minQty, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> MinQty. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> MinQty. " + err.Error())
 	}
 
 	limits.Base.MaxSize, err = strconv.ParseFloat(maxQty, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> MaxQty. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> MaxQty. " + err.Error())
 	}
 
 	limits.Base.Increment, err = strconv.ParseFloat(stepSize, 64)
 	if err != nil {
-		return symbol.Limits{}, errors.New("[bncresponse] -> StepSize. " + err.Error())
+		return symbol.Limits{}, errors.New("[mktdata] -> StepSize. " + err.Error())
 	}
 
 	return limits, nil

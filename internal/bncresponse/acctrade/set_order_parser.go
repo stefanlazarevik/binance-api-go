@@ -1,14 +1,15 @@
-package bncresponse
+package acctrade
 
 import (
 	"errors"
 	"fmt"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"net/http"
 	"strconv"
 )
 
 func ParseSetOrder(response *http.Response) (float64, error) {
-	bodyI, err := getResponseBody(response)
+	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return 0, err
 	}

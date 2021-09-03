@@ -1,14 +1,15 @@
-package bncresponse
+package acctrade
 
 import (
 	"errors"
+	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"net/http"
 	"strconv"
 )
 
 func ParseBalancesInfo(response *http.Response, quote string) (float64, error) {
-	bodyI, err := getResponseBody(response)
+	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return 0, err
 	}
