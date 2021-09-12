@@ -14,38 +14,48 @@ const (
 	lotSizeType     = "LOT_SIZE"
 )
 
-func GetSymbolLimits(response *http.Response) (symbol.Limits, error) {
+func GetSymbolLimits(response *http.Response) ([]symbol.Limits, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
-		return symbol.Limits{}, err
+		return []symbol.Limits{}, err
 	}
 
-	symbolInfo, err := parseSymbolInfo(bodyI)
+	symbolInfoArr, err := parseSymbolInfo(bodyI)
 	if err != nil {
-		return symbol.Limits{}, err
+		return []symbol.Limits{}, err
+	}
+	var limitsArr []symbol.Limits
+
+	for i := 0; i < len(symbolInfoArr); i++ {
+
+		symbolInfo, isOk := symbolInfoArr[i].(map[string]interface{})
+		if !isOk {
+			return nil, errors.New("[mktdata] -> failed to cast symbol to key/value pairs")
+		}
+
+		filters, isOk := symbolInfo[pnames.Filters].([]interface{})
+		if !isOk {
+			return []symbol.Limits{}, errors.New("[mktdata] -> filters tree casting failed")
+		}
+
+		limits, err := parseSymbolFilters(filters)
+		if err != nil {
+			return []symbol.Limits{}, err
+		}
+
+		limits.Assets, err = parseAsset(symbolInfo)
+		if err != nil {
+			return []symbol.Limits{}, err
+		}
+
+		limits, err = parseSymbolPrecision(symbolInfo, limits)
+		if err != nil {
+			return []symbol.Limits{}, err
+		}
+		limitsArr = append(limitsArr, limits)
 	}
 
-	filters, isOk := symbolInfo[pnames.Filters].([]interface{})
-	if !isOk {
-		return symbol.Limits{}, errors.New("[mktdata] -> filters tree casting failed")
-	}
-
-	limits, err := parseSymbolFilters(filters)
-	if err != nil {
-		return symbol.Limits{}, err
-	}
-
-	limits.Assets, err = parseAsset(symbolInfo)
-	if err != nil {
-		return symbol.Limits{}, err
-	}
-
-	limits, err = parseSymbolPrecision(symbolInfo, limits)
-	if err != nil {
-		return symbol.Limits{}, err
-	}
-
-	return limits, nil
+	return limitsArr, nil
 }
 
 func parseSymbolPrecision(symbolInfo map[string]interface{}, limits symbol.Limits) (symbol.Limits, error) {
@@ -80,7 +90,7 @@ func parseAsset(symbolInfo map[string]interface{}) (symbol.Assets, error) {
 	return assets, nil
 }
 
-func parseSymbolInfo(bodyI interface{}) (map[string]interface{}, error) {
+func parseSymbolInfo(bodyI interface{}) ([]interface{}, error) {
 	body, isOk := bodyI.(map[string]interface{})
 	if !isOk {
 		return nil, errors.New("[mktdata] -> error when casting bodyI to timeI")
@@ -95,12 +105,12 @@ func parseSymbolInfo(bodyI interface{}) (map[string]interface{}, error) {
 		return nil, errors.New("[mktdata] -> no symbols were returned by exchange information response")
 	}
 
-	symbolInfo, isOk := symbols[0].(map[string]interface{})
-	if !isOk {
-		return nil, errors.New("[mktdata] -> failed to cast symbol to key/value pairs")
-	}
+	//symbolInfo, isOk := symbols[0].(map[string]interface{})
+	//if !isOk {
+	//	return nil, errors.New("[mktdata] -> failed to cast symbol to key/value pairs")
+	//}
 
-	return symbolInfo, nil
+	return symbols, nil
 }
 
 func parseSymbolFilters(filters []interface{}) (symbol.Limits, error) {
