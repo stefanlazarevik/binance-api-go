@@ -41,7 +41,7 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 	return mktdata.GetServerTime(response)
 }
 
-func (manager *ExchangeManager) GetSymbolLimits() ([]symbol.Limits, error) {
+func (manager *ExchangeManager) GetSymbolsLimits() ([]symbol.Limits, error) {
 	response, err := manager.client.Get(fmt.Sprintf("%s%s", baseUrl, exchangeInfoEndpoint))
 	if err != nil {
 		return []symbol.Limits{}, err

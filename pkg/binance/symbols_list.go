@@ -5,12 +5,11 @@ import (
 )
 
 func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
-	limitsArr := manager.symbolsLimits
 
 	var assetsArr []symbol.Assets
 
-	for i := 0; i < len(limitsArr); i++ {
-		asset := limitsArr[i].Assets
+	for i := 0; i < len(manager.symbolsLimits); i++ {
+		asset := manager.symbolsLimits[i].Assets
 		assetsArr = append(assetsArr, asset)
 	}
 
