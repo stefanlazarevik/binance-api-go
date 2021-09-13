@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse/mktdata"
-	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"time"
@@ -42,11 +41,10 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 	return mktdata.GetServerTime(response)
 }
 
-func (manager *ExchangeManager) GetSymbolLimits(assets symbol.Assets) (symbol.Limits, error) {
-	response, err := manager.client.Get(fmt.Sprintf("%s%s?%s=%s%s", baseUrl, exchangeInfoEndpoint,
-		pnames.Symbol, assets.Base, assets.Quote))
+func (manager *ExchangeManager) GetSymbolLimits() ([]symbol.Limits, error) {
+	response, err := manager.client.Get(fmt.Sprintf("%s%s", baseUrl, exchangeInfoEndpoint))
 	if err != nil {
-		return symbol.Limits{}, err
+		return []symbol.Limits{}, err
 	}
 
 	defer bncresponse.CloseBody(response)

@@ -15,11 +15,12 @@ func main() {
 		Secret: os.Args[2],
 	})
 
-	err := mgr.UpdateSymbolsList()
-	if err != nil {
-		panic(err)
-	}
-
-	symbols := mgr.GetSymbolsList()
-	fmt.Print(symbols)
+	//err := mgr.UpdateSymbolsList()
+	//if err != nil {
+	//	panic(err)
+	//}
+	//
+	//symbols := mgr.GetSymbolsList()
+	//fmt.Print(symbols)
+	fmt.Println(mgr.GetSymbolsList())
 }

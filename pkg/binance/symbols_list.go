@@ -1,31 +1,27 @@
 package binance
 
 import (
-	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
-	"github.com/posipaka-trade/binance-api-go/internal/bncresponse/mktdata"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
-	"net/http"
 )
 
-func (manager *ExchangeManager) UpdateSymbolsList() error {
-	req, err := http.NewRequest(http.MethodGet, baseUrl+exchangeInfoEndpoint, nil)
+func (manager *ExchangeManager) GetSymbolsList() ([]symbol.Assets, error) {
+	limitsArr, err := manager.GetSymbolLimits()
 	if err != nil {
-		return err
+		return []symbol.Assets{}, err
 	}
 
-	response, err := manager.client.Do(req)
-	if err != nil {
-		return err
+	var assetsArr []symbol.Assets
+
+	for i := 0; i < len(limitsArr); i++ {
+		asset := limitsArr[i].Assets
+		assetsArr = append(assetsArr, asset)
 	}
 
-	defer bncresponse.CloseBody(response)
-	manager.symbolsList, err = mktdata.GetSymbolsList(response)
-	if err != nil {
-		return err
-	}
-	return nil
+	return assetsArr, nil
 }
 
-func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
-	return manager.symbolsList
+func (manager *ExchangeManager) StoreSymbolLimits(limits []symbol.Limits) {
+
+	manager.symbolsLimits = limits
+
 }
