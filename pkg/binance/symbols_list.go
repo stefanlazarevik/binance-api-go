@@ -17,7 +17,7 @@ func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
 	return assetsArr
 }
 
-func (manager *ExchangeManager) StoreSymbolLimits(limits []symbol.Limits) {
+func (manager *ExchangeManager) StoreSymbolsLimits(limits []symbol.Limits) {
 
 	manager.symbolsLimits = limits
 
