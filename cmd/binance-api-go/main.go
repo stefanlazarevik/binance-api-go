@@ -22,5 +22,7 @@ func main() {
 	//
 	//symbols := mgr.GetSymbolsList()
 	//fmt.Print(symbols)
+	limits, _ := mgr.GetSymbolLimits()
+	mgr.StoreSymbolLimits(limits)
 	fmt.Println(mgr.GetSymbolsList())
 }

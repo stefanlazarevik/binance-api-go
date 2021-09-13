@@ -4,11 +4,8 @@ import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 )
 
-func (manager *ExchangeManager) GetSymbolsList() ([]symbol.Assets, error) {
-	limitsArr, err := manager.GetSymbolLimits()
-	if err != nil {
-		return []symbol.Assets{}, err
-	}
+func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
+	limitsArr := manager.symbolsLimits
 
 	var assetsArr []symbol.Assets
 
@@ -17,7 +14,7 @@ func (manager *ExchangeManager) GetSymbolsList() ([]symbol.Assets, error) {
 		assetsArr = append(assetsArr, asset)
 	}
 
-	return assetsArr, nil
+	return assetsArr
 }
 
 func (manager *ExchangeManager) StoreSymbolLimits(limits []symbol.Limits) {
