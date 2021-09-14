@@ -17,9 +17,9 @@ type ExchangeManager struct {
 	client *http.Client
 }
 
-func (manager *ExchangeManager) AddLimits(limits symbol.Limits) {
-	manager.symbolsLimits = append(manager.symbolsLimits, limits)
-}
+//func (manager *ExchangeManager) AddLimits(limits symbol.Limits) {
+//	manager.symbolsLimits = append(manager.symbolsLimits, limits)
+//}
 
 func New(key exchangeapi.ApiKey) *ExchangeManager {
 	return &ExchangeManager{
