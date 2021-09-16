@@ -1,8 +1,4 @@
 github.com/golang/mock v1.6.0/go.mod h1:p6yTPP+5HYm5mzsMV8JkE6ZKdX+/wYM6Hr+LicevLPs=
-github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210903074050-dd1b61ca20ff h1:u7dc0m6WrD9zYUK5AWU7RDTY6VUb5X1qjIPzj+ks+oA=
-github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210903074050-dd1b61ca20ff/go.mod h1:MtyBzOkj2aI7S3EX+8RGGYDDxtrtyFPETA6uOqwZFFM=
-github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210906192454-3dbe4cf43c01 h1:+yn43WXxU9wbxn+/6mvoXIXqO6T1vO8IB/dGafrvI3g=
-github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210906192454-3dbe4cf43c01/go.mod h1:0GcgO7G+PXQ6PfTX4VVa6KGm9fWp0d1eLrZp7rz8SHY=
 github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210913150756-1cb5f18c5acb h1:TArSQh1XvSFqIx+8o5iRz5HjVPuZQ7/1AypWFknKDbI=
 github.com/posipaka-trade/posipaka-trade-cmn v0.0.0-20210913150756-1cb5f18c5acb/go.mod h1:0GcgO7G+PXQ6PfTX4VVa6KGm9fWp0d1eLrZp7rz8SHY=
 github.com/yuin/goldmark v1.3.5/go.mod h1:mwnBkeHKe2W/ZEtQ+71ViKU8L12m81fl3OWwC1Zlc8k=

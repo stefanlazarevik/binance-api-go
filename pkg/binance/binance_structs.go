@@ -11,7 +11,6 @@ const baseUrl = "https://api.binance.com"
 
 type ExchangeManager struct {
 	symbolsLimits []symbol.Limits
-	symbolsList   []symbol.Assets
 	apiKey        exchangeapi.ApiKey
 
 	client *http.Client
