@@ -2,9 +2,9 @@ package binance
 
 import (
 	"fmt"
-	cmn "github.com/posipaka-trade/posipaka-trade-cmn"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
+	"github.com/posipaka-trade/posipaka-trade-cmn/log"
 	"math"
 	"strconv"
 )
@@ -21,14 +21,14 @@ func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.P
 	}
 
 	if limitsIdx == -1 {
-		cmn.LogWarning.Printf("[binance] -> No limits found for %s/%s symbol",
+		log.Warning.Printf("[binance] -> No limits found for %s/%s symbol",
 			parameters.Assets.Base, parameters.Assets.Quote)
 		return parameters
 	}
 
 	if parameters.Type == order.Limit {
 		parameters.Price = filterCorrector(parameters.Price, manager.symbolsLimits[limitsIdx].Price)
-		cmn.LogInfo.Printf("[binance] -> Price value correction. New price %f", parameters.Price)
+		log.Info.Printf("[binance] -> Price value correction. New price %f", parameters.Price)
 	}
 
 	if parameters.Side == order.Sell {
@@ -40,7 +40,7 @@ func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.P
 			fmt.Sprint(manager.symbolsLimits[limitsIdx].Quote.Precision)+"f", parameters.Quantity), 64)
 	}
 
-	cmn.LogInfo.Printf("[binance] -> Quantity value correction on selling. New quantity %f",
+	log.Info.Printf("[binance] -> Quantity value correction on selling. New quantity %f",
 		parameters.Quantity)
 
 	return parameters
@@ -53,17 +53,17 @@ func filterCorrector(value float64, detail symbol.LimitDetail) float64 {
 	if ((valueInt - minValueInt) % incrementInt) != 0 {
 		valueInt -= (valueInt - minValueInt) % incrementInt
 		value = float64(valueInt) / accuracyFactor
-		cmn.LogWarning.Print("[binance] -> Increment reminder filter rule.")
+		log.Warning.Print("[binance] -> Increment reminder filter rule.")
 	}
 
 	if value > detail.MaxSize {
 		value = detail.MaxSize
-		cmn.LogWarning.Print("[binance] -> MaxSize filter rule.")
+		log.Warning.Print("[binance] -> MaxSize filter rule.")
 	}
 
 	if value < detail.MinSize {
 		value = detail.MinSize
-		cmn.LogWarning.Print("[binance] -> MinSize filter rule.")
+		log.Warning.Print("[binance] -> MinSize filter rule.")
 	}
 
 	return value

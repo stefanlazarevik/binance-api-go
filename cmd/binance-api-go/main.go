@@ -3,13 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/pkg/binance"
-	cmn "github.com/posipaka-trade/posipaka-trade-cmn"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/log"
 	"os"
 )
 
 func main() {
-	cmn.InitLoggers("binance-api-go")
+	log.Init("binance-api-go", true)
 	mgr := binance.New(exchangeapi.ApiKey{
 		Key:    os.Args[1],
 		Secret: os.Args[2],
@@ -22,7 +22,7 @@ func main() {
 	//
 	//symbols := mgr.GetSymbolsList()
 	//fmt.Print(symbols)
-	limits, _ := mgr.GetSymbolLimits()
+	limits, _ := mgr.GetSymbolsLimits()
 	mgr.StoreSymbolsLimits(limits)
 	fmt.Println(mgr.GetSymbolsList())
 }
