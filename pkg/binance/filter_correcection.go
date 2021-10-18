@@ -9,7 +9,7 @@ import (
 	"strconv"
 )
 
-const accuracyFactor = 1000000
+const accuracyFactor = 1000000000
 
 func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.Parameters {
 	limitsIdx := -1
@@ -47,23 +47,23 @@ func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.P
 }
 
 func filterCorrector(value float64, detail symbol.LimitDetail) float64 {
-	valueInt := int(math.Round(value * 1000000))
+	valueInt := int(math.Round(value * accuracyFactor))
 	minValueInt := int(math.Round(detail.MinSize * accuracyFactor))
 	incrementInt := int(math.Round(detail.Increment * accuracyFactor))
 	if ((valueInt - minValueInt) % incrementInt) != 0 {
 		valueInt -= (valueInt - minValueInt) % incrementInt
 		value = float64(valueInt) / accuracyFactor
-		log.Warning.Print("[binance] -> Increment reminder filter rule.")
+		log.Warning.Printf("[binance] -> Increment reminder filter rule. Value -> %f", detail.Increment)
 	}
 
 	if value > detail.MaxSize {
 		value = detail.MaxSize
-		log.Warning.Print("[binance] -> MaxSize filter rule.")
+		log.Warning.Printf("[binance] -> MaxSize filter rule. Value -> %f", detail.MaxSize)
 	}
 
 	if value < detail.MinSize {
 		value = detail.MinSize
-		log.Warning.Print("[binance] -> MinSize filter rule.")
+		log.Warning.Printf("[binance] -> MinSize filter rule. Value -> %f", detail.MinSize)
 	}
 
 	return value
