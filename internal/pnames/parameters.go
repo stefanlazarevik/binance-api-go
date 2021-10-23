@@ -63,3 +63,9 @@ const (
 	Asset    = "asset"
 	Free     = "free"
 )
+
+//coins info
+
+const (
+	Coin = "coin"
+)
