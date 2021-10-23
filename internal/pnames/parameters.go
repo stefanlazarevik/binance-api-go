@@ -47,10 +47,11 @@ const (
 
 // order info
 const (
-	OrderId = "orderId"
-	Side    = "side"
-	Status  = "status"
-
+	OrderId       = "orderId"
+	Side          = "side"
+	Status        = "status"
+	Fills         = "fills"
+	OrigQty       = "origQty"
 	QuoteOrderQty = "quoteOrderQty"
 	TimeInForce   = "timeInForce"
 )

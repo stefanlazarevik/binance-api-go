@@ -9,6 +9,8 @@ import (
 
 const baseUrl = "https://api.binance.com"
 
+//const baseUrl = "https://testnet.binance.vision"
+
 type ExchangeManager struct {
 	symbolsLimits []symbol.Limits
 	apiKey        exchangeapi.ApiKey
