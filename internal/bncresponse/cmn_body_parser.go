@@ -3,10 +3,15 @@ package bncresponse
 import (
 	"encoding/json"
 	"errors"
-	"github.com/posipaka-trade/binance-api-go/pkg/binance"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"io/ioutil"
 	"net/http"
+)
+
+// errors keys
+const (
+	RetryAfter = "Retry-After"
+	UsedWeight = "X-MBX-USED-WEIGHT"
 )
 
 // responses json keys
@@ -25,7 +30,7 @@ func GetResponseBody(response *http.Response) (interface{}, error) {
 		}
 
 		if response.StatusCode == 429 {
-			err.KeysDetails[binance.RetryAfter] = response.Header.Get(binance.RetryAfter)
+			err.KeysDetails[RetryAfter] = response.Header.Get(RetryAfter)
 		}
 
 		return nil, &err

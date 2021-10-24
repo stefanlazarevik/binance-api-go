@@ -37,12 +37,6 @@ var orderTypeAlias = map[order.Type]string{
 	order.Market: "MARKET",
 }
 
-// errors keys
-const (
-	RetryAfter = "Retry-After"
-	UsedWeight = "X-MBX-USED-WEIGHT"
-)
-
 // binance api endpoints
 const (
 	newOrderEndpoint       = "/api/v3/order"
