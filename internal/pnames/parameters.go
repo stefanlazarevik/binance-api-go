@@ -47,10 +47,11 @@ const (
 
 // order info
 const (
-	OrderId = "orderId"
-	Side    = "side"
-	Status  = "status"
-
+	OrderId       = "orderId"
+	Side          = "side"
+	Status        = "status"
+	Fills         = "fills"
+	OrigQty       = "origQty"
 	QuoteOrderQty = "quoteOrderQty"
 	TimeInForce   = "timeInForce"
 )
@@ -61,4 +62,10 @@ const (
 	Balances = "balances"
 	Asset    = "asset"
 	Free     = "free"
+)
+
+//coins info
+
+const (
+	Coin = "coin"
 )

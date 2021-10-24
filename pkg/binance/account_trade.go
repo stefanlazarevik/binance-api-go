@@ -37,18 +37,19 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 // Set LIMIT or MARKET order on exchange.
 // LIMIT - price is mandatory and quantity must be a value in Base equivalent regardless of side.
 // MARKET - when buying quantity must in Quote; when selling quantity must be in Base.
-func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (float64, error) {
+
+func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.OrderInfo, error) {
 	requestBody := manager.createOrderRequestBody(parameters)
 	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
 	if err != nil {
-		return 0, err
+		return order.OrderInfo{}, err
 	}
 
 	bncrequest.SetHeader(request, manager.apiKey.Key)
 
 	response, err := manager.client.Do(request)
 	if err != nil {
-		return 0, err
+		return order.OrderInfo{}, err
 	}
 
 	defer bncresponse.CloseBody(response)
@@ -94,4 +95,21 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 
 	defer bncresponse.CloseBody(response)
 	return acctrade.ParseBalancesInfo(response, asset)
+}
+
+func (manager *ExchangeManager) GetAllCoinsInfo() ([]string, error) {
+	urk := make(url.Values, 0)
+	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, getAllCoinsEndpoint, "?", signature), nil)
+	if err != nil {
+		return nil, err
+	}
+	bncrequest.SetHeader(request, manager.apiKey.Key)
+
+	response, err := manager.client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer bncresponse.CloseBody(response)
+	return acctrade.ParseAllCoinsResponse(response)
 }
