@@ -1,6 +1,7 @@
 package binance
 
 import (
+	"errors"
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/bncrequest"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
@@ -11,6 +12,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Info, error) {
@@ -25,8 +27,14 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 
 	bncrequest.SetHeader(req, manager.apiKey.Key)
 
+	if time.Now().Before(manager.nextRequestTime) {
+		return nil, errors.New("[binance] -> Getting order list is impossible due to block. Waiting until " +
+			fmt.Sprint(manager.nextRequestTime.Unix()))
+	}
+
 	resp, err := manager.client.Do(req)
 	if err != nil {
+		manager.checkReqError(err)
 		return nil, err
 	}
 
@@ -34,10 +42,9 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 	return acctrade.ParseGetOrderList(resp)
 }
 
-// Set LIMIT or MARKET order on exchange.
+// SetOrder Set LIMIT or MARKET order on exchange.
 // LIMIT - price is mandatory and quantity must be a value in Base equivalent regardless of side.
 // MARKET - when buying quantity must in Quote; when selling quantity must be in Base.
-
 func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.OrderInfo, error) {
 	requestBody := manager.createOrderRequestBody(parameters)
 	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
@@ -47,8 +54,13 @@ func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.Ord
 
 	bncrequest.SetHeader(request, manager.apiKey.Key)
 
+	if time.Now().Before(manager.nextRequestTime) {
+		return order.OrderInfo{}, errors.New("[binance] -> Setting order is impossible due to block. Waiting until " +
+			fmt.Sprint(manager.nextRequestTime.Unix()))
+	}
 	response, err := manager.client.Do(request)
 	if err != nil {
+		manager.checkReqError(err)
 		return order.OrderInfo{}, err
 	}
 
@@ -88,8 +100,13 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 
 	bncrequest.SetHeader(request, manager.apiKey.Key)
 
+	if time.Now().Before(manager.nextRequestTime) {
+		return 0, errors.New("[binance] -> Getting asset balance is impossible due to block. Waiting until " +
+			fmt.Sprint(manager.nextRequestTime.Unix()))
+	}
 	response, err := manager.client.Do(request)
 	if err != nil {
+		manager.checkReqError(err)
 		return 0, err
 	}
 
@@ -106,8 +123,13 @@ func (manager *ExchangeManager) GetAllCoinsInfo() ([]string, error) {
 	}
 	bncrequest.SetHeader(request, manager.apiKey.Key)
 
+	if time.Now().Before(manager.nextRequestTime) {
+		return nil, errors.New("[binance] -> Getting coins info is impossible due to block. Waiting until " +
+			fmt.Sprint(manager.nextRequestTime.Unix()))
+	}
 	response, err := manager.client.Do(request)
 	if err != nil {
+		manager.checkReqError(err)
 		return nil, err
 	}
 	defer bncresponse.CloseBody(response)

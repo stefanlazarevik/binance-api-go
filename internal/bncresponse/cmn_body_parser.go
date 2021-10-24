@@ -3,6 +3,7 @@ package bncresponse
 import (
 	"encoding/json"
 	"errors"
+	"github.com/posipaka-trade/binance-api-go/pkg/binance"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"io/ioutil"
 	"net/http"
@@ -15,12 +16,19 @@ const (
 )
 
 func GetResponseBody(response *http.Response) (interface{}, error) {
-	if response.StatusCode/100 != 2 && response.Body == nil {
-		return nil, &exchangeapi.ExchangeError{
-			Type:    exchangeapi.HttpErr,
-			Code:    response.StatusCode,
-			Message: response.Status,
+	if response.StatusCode/100 != 2 {
+		err := exchangeapi.ExchangeError{
+			Type:        exchangeapi.HttpErr,
+			Code:        response.StatusCode,
+			Message:     response.Status,
+			KeysDetails: make(map[string]string),
 		}
+
+		if response.StatusCode == 429 {
+			err.KeysDetails[binance.RetryAfter] = response.Header.Get(binance.RetryAfter)
+		}
+
+		return nil, &err
 	}
 
 	respondBody, err := ioutil.ReadAll(response.Body)

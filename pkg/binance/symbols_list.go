@@ -5,9 +5,7 @@ import (
 )
 
 func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
-
 	var assetsArr []symbol.Assets
-
 	for i := 0; i < len(manager.symbolsLimits); i++ {
 		asset := manager.symbolsLimits[i].Assets
 		assetsArr = append(assetsArr, asset)
@@ -17,7 +15,5 @@ func (manager *ExchangeManager) GetSymbolsList() []symbol.Assets {
 }
 
 func (manager *ExchangeManager) StoreSymbolsLimits(limits []symbol.Limits) {
-
 	manager.symbolsLimits = limits
-
 }
