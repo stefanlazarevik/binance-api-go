@@ -5,7 +5,6 @@ import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
-	"time"
 )
 
 const baseUrl = "https://api.binance.com"
@@ -13,9 +12,8 @@ const baseUrl = "https://api.binance.com"
 //const baseUrl = "https://testnet.binance.vision"
 
 type ExchangeManager struct {
-	nextRequestTime time.Time
-	symbolsLimits   []symbol.Limits
-	apiKey          exchangeapi.ApiKey
+	symbolsLimits []symbol.Limits
+	apiKey        exchangeapi.ApiKey
 
 	client *http.Client
 }
