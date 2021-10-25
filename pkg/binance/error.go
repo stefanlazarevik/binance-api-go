@@ -22,7 +22,7 @@ func (manager *ExchangeManager) checkReqError(err error) {
 			retryAfterStr, isOkay := exchErr.KeysDetails[bncresponse.RetryAfter]
 			if isOkay {
 				retryAfter, err := strconv.Atoi(retryAfterStr)
-				if err != nil {
+				if err == nil {
 					manager.nextRequestTime = time.Now().Add(time.Duration(retryAfter) * time.Second)
 				}
 			}

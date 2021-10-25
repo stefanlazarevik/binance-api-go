@@ -21,20 +21,18 @@ const (
 )
 
 func GetResponseBody(response *http.Response) (interface{}, error) {
-	if response.StatusCode/100 != 2 {
-		err := exchangeapi.ExchangeError{
-			Type:        exchangeapi.HttpErr,
-			Code:        response.StatusCode,
-			Message:     response.Status,
-			KeysDetails: make(map[string]string),
-		}
-
-		if response.StatusCode == 429 {
-			err.KeysDetails[RetryAfter] = response.Header.Get(RetryAfter)
-		}
-
-		return nil, &err
-	}
+	//if response.StatusCode/100 != 2 {
+	//	err := exchangeapi.ExchangeError{
+	//		Type:        exchangeapi.HttpErr,
+	//		Code:        response.StatusCode,
+	//		Message:     response.Status,
+	//		KeysDetails: make(map[string]string),
+	//	}
+	//	if response.StatusCode == http.StatusTooManyRequests {
+	//		err.KeysDetails[RetryAfter] = response.Header.Get(RetryAfter)
+	//	}
+	//	return nil, &err
+	//}
 
 	respondBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {

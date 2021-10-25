@@ -65,10 +65,15 @@ func (manager *ExchangeManager) GetSymbolsLimits() ([]symbol.Limits, error) {
 	}
 	response, err := manager.client.Get(fmt.Sprintf("%s%s", baseUrl, exchangeInfoEndpoint))
 	if err != nil {
-		manager.checkReqError(err)
 		return []symbol.Limits{}, err
 	}
 
 	defer bncresponse.CloseBody(response)
-	return mktdata.GetSymbolLimits(response)
+	limits, err := mktdata.GetSymbolLimits(response)
+	if err != nil {
+		manager.checkReqError(err)
+		return nil, err
+	}
+
+	return limits, nil
 }
