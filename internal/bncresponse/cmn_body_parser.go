@@ -29,10 +29,6 @@ func GetResponseBody(response *http.Response) (interface{}, error) {
 			KeysDetails: make(map[string]string),
 		}
 
-		if response.StatusCode == 429 {
-			err.KeysDetails[RetryAfter] = response.Header.Get(RetryAfter)
-		}
-
 		return nil, &err
 	}
 
