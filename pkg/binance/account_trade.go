@@ -66,10 +66,10 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 	if params.Type == order.Limit {
 		body.Set(pnames.TimeInForce, "GTC")
 		body.Set(pnames.Price, strconv.FormatFloat(params.Price, 'f', -1, 64))
-		body.Set(pnames.Quantity, fmt.Sprint(params.Quantity))
+		body.Set(pnames.Quantity, strconv.FormatFloat(params.Quantity, 'f', -1, 64))
 	} else if params.Type == order.Market {
 		if params.Side == order.Buy {
-			body.Add(pnames.QuoteOrderQty, fmt.Sprint(params.Quantity))
+			body.Add(pnames.QuoteOrderQty, strconv.FormatFloat(params.Quantity, 'f', -1, 64))
 		} else {
 			body.Add(pnames.Quantity, fmt.Sprint(params.Quantity))
 		}
