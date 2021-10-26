@@ -1,0 +1,59 @@
+2021/10/23 20:00:36.936833 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/23 20:00:51.491973 [INFO]: [binance] -> Quantity value correction on selling. New quantity 5000.000000
+2021/10/23 20:01:18.839093 [INFO]: [binance] -> Quantity value correction on selling. New quantity 5000.000000
+2021/10/23 20:04:40.343165 [INFO]: [binance] -> Quantity value correction on selling. New quantity 5000.000000
+2021/10/23 23:23:31.976529 [INFO]: [binance] -> Quantity value correction on selling. New quantity 5000.000000
+2021/10/23 23:29:00.653429 [INFO]: [binance] -> Quantity value correction on selling. New quantity 5000.000000
+2021/10/23 23:35:12.553866 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/23 23:35:52.444939 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/23 23:45:48.791915 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/23 23:55:32.187210 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/23 23:56:21.835154 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/24 00:04:27.934367 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/24 00:04:45.037120 [INFO]: [binance] -> Quantity value correction on selling. New quantity 1000.000000
+2021/10/24 00:05:27.018402 [INFO]: [binance] -> Quantity value correction on selling. New quantity 102.447210
+2021/10/24 00:06:00.505716 [INFO]: [binance] -> Quantity value correction on selling. New quantity 1000.000000
+2021/10/24 11:45:33.586418 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/24 11:46:00.897010 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/24 11:46:25.750961 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 14:05:51.648181 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 21:50:50.395356 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 21:51:26.239080 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 21:52:25.289251 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 21:52:36.586675 [WARNING]: [binance] -> No limits found for ETH/USDT symbol
+2021/10/25 21:55:43.034474 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 21:56:15.005690 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:00:57.246474 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:01:08.159051 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:02:29.977223 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:04:05.613550 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:05:20.906094 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:07:48.956414 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:09:47.947044 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:10:00.132785 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:13:55.548189 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:16:14.716038 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:17:14.928040 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:17:26.396122 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:21:22.486023 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:22:37.042527 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:23:27.560461 [WARNING]: [binance] -> No limits found for BNB/BUSD symbol
+2021/10/25 22:25:56.081815 [INFO]: [binance] -> Price value correction. New price 550.000000
+2021/10/25 22:25:56.081934 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 0.001000
+2021/10/25 22:25:56.082008 [INFO]: [binance] -> Quantity value correction on selling. New quantity 0.019000
+2021/10/25 22:34:46.584336 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 1.000000
+2021/10/25 22:34:46.584619 [INFO]: [binance] -> Quantity value correction on selling. New quantity 240855.000000
+2021/10/25 22:35:23.018383 [INFO]: [binance] -> Quantity value correction on selling. New quantity 10.000000
+2021/10/25 22:35:42.904869 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 1.000000
+2021/10/25 22:35:42.905129 [INFO]: [binance] -> Quantity value correction on selling. New quantity 481181.000000
+2021/10/25 22:36:02.496901 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 0.100000
+2021/10/25 22:36:02.497236 [INFO]: [binance] -> Quantity value correction on selling. New quantity 1.400000
+2021/10/25 22:36:26.156399 [INFO]: [binance] -> Quantity value correction on selling. New quantity 10.000000
+2021/10/25 22:36:34.418629 [INFO]: [binance] -> Quantity value correction on selling. New quantity 10.000000
+2021/10/25 22:36:48.748836 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 0.100000
+2021/10/25 22:36:48.749101 [INFO]: [binance] -> Quantity value correction on selling. New quantity 2.800000
+2021/10/25 22:37:02.980578 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 0.100000
+2021/10/25 22:37:02.980710 [INFO]: [binance] -> Quantity value correction on selling. New quantity 16.700000
+2021/10/25 22:50:06.861677 [INFO]: [binance] -> Quantity value correction on selling. New quantity 15.000000
+2021/10/25 22:51:59.197834 [WARNING]: [binance] -> Increment reminder filter rule. Value -> 0.100000
+2021/10/25 22:51:59.198134 [INFO]: [binance] -> Quantity value correction on selling. New quantity 12.600000
