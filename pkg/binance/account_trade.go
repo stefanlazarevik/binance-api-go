@@ -65,11 +65,7 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 
 	if params.Type == order.Limit {
 		body.Set(pnames.TimeInForce, "GTC")
-		if params.Assets.Quote == "BTC" || params.Assets.Quote == "ETH" {
-			body.Set(pnames.Price, strconv.FormatFloat(params.Price, 'f', -1, 64))
-		} else {
-			body.Set(pnames.Price, fmt.Sprint(params.Price))
-		}
+		body.Set(pnames.Price, strconv.FormatFloat(params.Price, 'f', -1, 64))
 		body.Set(pnames.Quantity, fmt.Sprint(params.Quantity))
 	} else if params.Type == order.Market {
 		if params.Side == order.Buy {
