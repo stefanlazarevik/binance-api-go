@@ -5,6 +5,8 @@ import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
+	"sync"
+	"time"
 )
 
 const baseUrl = "https://api.binance.com"
@@ -16,13 +18,36 @@ type ExchangeManager struct {
 	apiKey        exchangeapi.ApiKey
 
 	client *http.Client
+
+	isWorking bool
+	wg        sync.WaitGroup
 }
 
 func New(key exchangeapi.ApiKey) *ExchangeManager {
-	return &ExchangeManager{
+	mgr := &ExchangeManager{
 		apiKey: key,
-		client: &http.Client{},
+		client: &http.Client{
+			Transport: http.DefaultTransport,
+		},
+		isWorking: true,
 	}
+
+	mgr.wg.Add(1)
+	go func() {
+		defer mgr.wg.Done()
+		for mgr.isWorking {
+			_, _ = mgr.client.Get(baseUrl)
+			time.Sleep(75 * time.Second)
+		}
+	}()
+
+	return mgr
+}
+
+// Finish completes inner goroutines
+func (manager *ExchangeManager) Finish() {
+	manager.isWorking = false
+	manager.wg.Wait()
 }
 
 var orderSideAlias = map[order.Side]string{
