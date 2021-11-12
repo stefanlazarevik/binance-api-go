@@ -53,17 +53,14 @@ func filterCorrector(value float64, detail symbol.LimitDetail) float64 {
 	if ((valueInt - minValueInt) % incrementInt) != 0 {
 		valueInt -= (valueInt - minValueInt) % incrementInt
 		value = float64(valueInt) / accuracyFactor
-		log.Warning.Printf("[binance] -> Increment reminder filter rule. Value -> %f", detail.Increment)
 	}
 
 	if value > detail.MaxSize {
 		value = detail.MaxSize
-		log.Warning.Printf("[binance] -> MaxSize filter rule. Value -> %f", detail.MaxSize)
 	}
 
 	if value < detail.MinSize {
 		value = detail.MinSize
-		log.Warning.Printf("[binance] -> MinSize filter rule. Value -> %f", detail.MinSize)
 	}
 
 	return value
