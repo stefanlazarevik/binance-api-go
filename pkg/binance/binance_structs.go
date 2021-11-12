@@ -35,9 +35,13 @@ func New(key exchangeapi.ApiKey) *ExchangeManager {
 	mgr.wg.Add(1)
 	go func() {
 		defer mgr.wg.Done()
+		lastConnectionTime := time.Time{}
 		for mgr.isWorking {
-			_, _ = mgr.client.Get(baseUrl)
-			time.Sleep(75 * time.Second)
+			if time.Now().Sub(lastConnectionTime) >= 75*time.Second {
+				_, _ = mgr.client.Get(baseUrl)
+				lastConnectionTime = time.Now()
+			}
+			time.Sleep(time.Second)
 		}
 	}()
 
