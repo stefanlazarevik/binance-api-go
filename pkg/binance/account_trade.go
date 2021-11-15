@@ -38,22 +38,34 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 // SetOrder Set LIMIT or MARKET order on exchange.
 // LIMIT - price is mandatory and quantity must be a value in Base equivalent regardless of side.
 // MARKET - when buying quantity must in Quote; when selling quantity must be in Base.
-func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.OrderInfo, error) {
+func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.Info, error) {
 	requestBody := manager.createOrderRequestBody(parameters)
 	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
 	if err != nil {
-		return order.OrderInfo{}, err
+		return order.Info{}, err
 	}
 
 	bncrequest.SetHeader(request, manager.apiKey.Key)
 
 	response, err := manager.client.Do(request)
 	if err != nil {
-		return order.OrderInfo{}, err
+		return order.Info{}, err
 	}
 
 	defer bncresponse.CloseBody(response)
-	return acctrade.ParseSetOrder(response)
+	orderInfo, err := acctrade.ParseOrderInfoResponse(response)
+	if err != nil {
+		return order.Info{}, err
+	}
+
+	orderInfo.Assets = parameters.Assets
+	if orderInfo.Type == order.Market {
+		orderInfo.QuoteQuantity = parameters.Quantity
+	} else if orderInfo.Type == order.Limit {
+		orderInfo.Price = parameters.Price
+	}
+
+	return orderInfo, nil
 }
 
 func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) string {

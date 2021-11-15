@@ -53,19 +53,17 @@ const (
 	Fills         = "fills"
 	OrigQty       = "origQty"
 	QuoteOrderQty = "quoteOrderQty"
+	TransactTime  = "transactTime"
+	UpdateTime    = "updateTime"
 	TimeInForce   = "timeInForce"
 )
 
 //balances info
-
 const (
 	Balances = "balances"
 	Asset    = "asset"
 	Free     = "free"
 )
 
-//coins info
-
-const (
-	Coin = "coin"
-)
+// Coin coins info
+const Coin = "coin"
