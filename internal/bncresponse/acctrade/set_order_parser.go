@@ -49,13 +49,18 @@ func ParseOrderInfoResponse(response *http.Response) (order.Info, error) {
 }
 
 func retrieveOrderInfo(body map[string]interface{}) (order.Info, error) {
-	orderId, isOkay := body[pnames.OrderId]
+	orderIdI, isOkay := body[pnames.OrderId]
 	if !isOkay {
 		return order.Info{}, errors.New("[bncresponse] -> Field `orderId` does not exist")
 	}
 
+	orderId, isOkay := orderIdI.(float64)
+	if !isOkay {
+		return order.Info{}, errors.New("[bncresponse] -> Field in casting interface to float64")
+	}
+
 	orderInfo := order.Info{
-		Id: fmt.Sprint(orderId),
+		Id: fmt.Sprint(int(orderId)),
 	}
 
 	var err error
