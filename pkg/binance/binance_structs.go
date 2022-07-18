@@ -9,9 +9,10 @@ import (
 	"time"
 )
 
-const baseUrl = "https://api.binance.com"
+const BaseUrl = "https://api.binance.com"
+const BaseMarginUrl = "https://fapi.binance.com"
 
-//const baseUrl = "https://testnet.binance.vision"
+//const BaseUrl = "https://testnet.binance.vision"
 
 type ExchangeManager struct {
 	symbolsLimits []symbol.Limits
@@ -38,7 +39,7 @@ func New(key exchangeapi.ApiKey) *ExchangeManager {
 		lastConnectionTime := time.Time{}
 		for mgr.isWorking {
 			if time.Now().Sub(lastConnectionTime) >= 75*time.Second {
-				_, _ = mgr.client.Get(baseUrl)
+				_, _ = mgr.client.Get(BaseUrl)
 				lastConnectionTime = time.Now()
 			}
 			time.Sleep(time.Second)
@@ -66,9 +67,10 @@ var orderTypeAlias = map[order.Type]string{
 
 // binance api endpoints
 const (
+	MarginGetPriceEndpoint = "/fapi/v1/ticker/price"
 	newOrderEndpoint       = "/api/v3/order"
 	openOrdersEndpoint     = "/api/v3/openOrders"
-	getPriceEndpoint       = "/api/v3/ticker/price"
+	GetPriceEndpoint       = "/api/v3/ticker/price"
 	getCandlestickEndpoint = "/api/v3/klines"
 	getServerTimeEndpoint  = "/api/v3/time"
 	exchangeInfoEndpoint   = "/api/v3/exchangeInfo"

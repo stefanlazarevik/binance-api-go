@@ -19,7 +19,7 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 	params.Set(pnames.Symbol, fmt.Sprint(assets.Base, assets.Quote))
 	queryStr := bncrequest.Sign(params, manager.apiKey.Secret)
 
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, openOrdersEndpoint, "?", queryStr), nil)
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprint(BaseUrl, openOrdersEndpoint, "?", queryStr), nil)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +40,7 @@ func (manager *ExchangeManager) GetOrdersList(assets symbol.Assets) ([]order.Inf
 // MARKET - when buying quantity must in Quote; when selling quantity must be in Base.
 func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.Info, error) {
 	requestBody := manager.createOrderRequestBody(parameters)
-	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(baseUrl, newOrderEndpoint), strings.NewReader(requestBody))
+	request, err := http.NewRequest(http.MethodPost, fmt.Sprint(BaseUrl, newOrderEndpoint), strings.NewReader(requestBody))
 	if err != nil {
 		return order.Info{}, err
 	}
@@ -93,7 +93,7 @@ func (manager *ExchangeManager) createOrderRequestBody(params order.Parameters) 
 func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 	urk := make(url.Values, 0)
 	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
-	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, accountInfoEndpoint, "?", signature), nil)
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(BaseUrl, accountInfoEndpoint, "?", signature), nil)
 	if err != nil {
 		return 0, err
 	}
@@ -112,7 +112,7 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 func (manager *ExchangeManager) GetAllCoinsInfo() ([]string, error) {
 	urk := make(url.Values, 0)
 	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
-	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(baseUrl, getAllCoinsEndpoint, "?", signature), nil)
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(BaseUrl, getAllCoinsEndpoint, "?", signature), nil)
 	if err != nil {
 		return nil, err
 	}

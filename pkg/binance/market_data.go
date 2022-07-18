@@ -11,7 +11,7 @@ import (
 
 func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, error) {
 	params := fmt.Sprintf("symbol=%s%s", symbol.Base, symbol.Quote)
-	response, err := manager.client.Get(fmt.Sprint(baseUrl, getPriceEndpoint, "?", params))
+	response, err := manager.client.Get(fmt.Sprint(BaseUrl, GetPriceEndpoint, "?", params))
 	if err != nil {
 		return 0, err
 	}
@@ -20,9 +20,19 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	return mktdata.GetCurrentPrice(response)
 }
 
+func (manager *ExchangeManager) GetPricesMap(baseUrl, endpoint string) (map[string]float64, error) {
+	response, err := manager.client.Get(fmt.Sprint(baseUrl, endpoint))
+	if err != nil {
+		return nil, err
+	}
+
+	defer bncresponse.CloseBody(response)
+	return mktdata.GetPricesMap(response)
+}
+
 func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) ([]exchangeapi.Candlestick, error) {
 	params := fmt.Sprintf("symbol=%s%s&interval=%s&limit=%d", symbol.Base, symbol.Quote, interval, limit)
-	response, err := manager.client.Get(fmt.Sprint(baseUrl, getCandlestickEndpoint, "?", params))
+	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getCandlestickEndpoint, "?", params))
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +42,7 @@ func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval st
 }
 
 func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
-	response, err := manager.client.Get(fmt.Sprint(baseUrl, getServerTimeEndpoint))
+	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getServerTimeEndpoint))
 	if err != nil {
 		return time.Time{}, err
 	}
@@ -42,7 +52,7 @@ func (manager *ExchangeManager) GetServerTime() (time.Time, error) {
 }
 
 func (manager *ExchangeManager) GetSymbolsLimits() ([]symbol.Limits, error) {
-	response, err := manager.client.Get(fmt.Sprintf("%s%s", baseUrl, exchangeInfoEndpoint))
+	response, err := manager.client.Get(fmt.Sprintf("%s%s", BaseUrl, exchangeInfoEndpoint))
 	if err != nil {
 		return []symbol.Limits{}, err
 	}

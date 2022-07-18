@@ -1,21 +1,11 @@
 package main
 
-import (
-	"fmt"
-	"github.com/posipaka-trade/binance-api-go/pkg/binance"
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/order"
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
-	"github.com/posipaka-trade/posipaka-trade-cmn/log"
-	"os"
-)
-
 func main() {
-	log.Init("binance-api-go", true)
-	mgr := binance.New(exchangeapi.ApiKey{
-		Key:    os.Args[1],
-		Secret: os.Args[2],
-	})
+	//log.Init("binance-api-go", true)
+	//mgr := binance.New(exchangeapi.ApiKey{
+	//	Key:    os.Args[1],
+	//	Secret: os.Args[2],
+	//})
 
 	//startTime := time.Now()
 	//for {
@@ -30,24 +20,24 @@ func main() {
 	//		startTime = time.Now()
 	//	}
 	//}
-	limits, _ := mgr.GetSymbolsLimits()
-	mgr.StoreSymbolsLimits(limits)
-	fmt.Println(mgr.GetAssetBalance("USDT"))
-	or, err := mgr.SetOrder(order.Parameters{
-		Assets: symbol.Assets{
-			Base:  "BUSD",
-			Quote: "USDT",
-		},
-		Side:     order.Sell,
-		Type:     order.Limit,
-		Quantity: 15,
-		Price:    1.5,
-	})
-	if err != nil {
-		log.Error.Print(err)
-	}
-	log.Info.Print(or)
-	//coins, _ := mgr.GetAllCoinsInfo()
-	//fmt.Println(len(coins))
-	//fmt.Println(coins)
+	//limits, _ := mgr.GetSymbolsLimits()
+	//mgr.StoreSymbolsLimits(limits)
+	//fmt.Println(mgr.GetAssetBalance("USDT"))
+	//or, err := mgr.SetOrder(order.Parameters{
+	//	Assets: symbol.Assets{
+	//		Base:  "BUSD",
+	//		Quote: "USDT",
+	//	},
+	//	Side:     order.Sell,
+	//	Type:     order.Limit,
+	//	Quantity: 15,
+	//	Price:    1.5,
+	//})
+	//if err != nil {
+	//	log.Error.Print(err)
+	//}
+	//log.Info.Print(or)
+	////coins, _ := mgr.GetAllCoinsInfo()
+	////fmt.Println(len(coins))
+	////fmt.Println(coins)
 }
