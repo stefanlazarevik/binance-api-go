@@ -67,3 +67,9 @@ const (
 
 // Coin coins info
 const Coin = "coin"
+
+//coins name
+const (
+	Usdt = "USDT"
+	Eur  = "EUR"
+)

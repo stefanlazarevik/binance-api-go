@@ -154,7 +154,7 @@ func getTransactionTime(body map[string]interface{}) (time.Time, error) {
 func getOrderSide(body map[string]interface{}) (order.Side, error) {
 	side, isOkay := body[pnames.Side].(string)
 	if !isOkay {
-		return order.UnknownSide, errors.New("[bncresponse] -> Field `side` does not exist")
+		return order.OtherSide, errors.New("[bncresponse] -> Field `side` does not exist")
 	}
 
 	switch side {
@@ -163,23 +163,23 @@ func getOrderSide(body map[string]interface{}) (order.Side, error) {
 	case "SELL":
 		return order.Sell, nil
 	default:
-		return order.UnknownSide, nil
+		return order.OtherSide, nil
 	}
 }
 
 func getOrderStatus(body map[string]interface{}) (order.Status, error) {
 	status, isOkay := body[pnames.Status].(string)
 	if !isOkay {
-		return order.UnknownStatus, errors.New("[bncresponse] -> Field `status` does not exist")
+		return order.OtherStatus, errors.New("[bncresponse] -> Field `status` does not exist")
 	}
 
 	switch status {
 	case "NEW":
-		return order.Open, nil
+		return order.New, nil
 	case "FILLED":
 		return order.Filled, nil
-	case "PARTIALLY_FILLED":
-		return order.PartiallyFilled, nil
+	//case "PARTIALLY_FILLED":
+	//	return order.PartiallyFilled, nil
 	case "PENDING_CANCEL":
 		return order.Canceled, nil
 	case "CANCELED":
@@ -189,14 +189,14 @@ func getOrderStatus(body map[string]interface{}) (order.Status, error) {
 	case "EXPIRED":
 		return order.Expired, nil
 	default:
-		return order.UnknownStatus, nil
+		return order.OtherStatus, nil
 	}
 }
 
 func getOrderType(body map[string]interface{}) (order.Type, error) {
 	orderType, isOkay := body[pnames.Type].(string)
 	if !isOkay {
-		return order.UnknownType, errors.New("[bncresponse] -> Field `type` does not exist")
+		return order.OtherType, errors.New("[bncresponse] -> Field `type` does not exist")
 	}
 
 	switch orderType {
@@ -205,6 +205,6 @@ func getOrderType(body map[string]interface{}) (order.Type, error) {
 	case "MARKET":
 		return order.Market, nil
 	default:
-		return order.UnknownType, nil
+		return order.OtherType, nil
 	}
 }
