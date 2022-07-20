@@ -42,15 +42,15 @@ func GetPricesMap(response *http.Response) ([]symbol.AssetInfo, error) {
 
 	assetPricesArr := make([]symbol.AssetInfo, 0)
 
-	for _, t := range priceI {
-		symbolAsset, isOk := t[pnames.Symbol].(string)
+	for _, assets := range priceI {
+		symbolAsset, isOk := assets[pnames.Symbol].(string)
 		if !isOk {
-			return nil, errors.New("[mktdata] -> error when casting bodyI to priceI")
+			return nil, errors.New("[mktdata] -> error when casting asset symbol to string")
 		}
 
-		priceStr, isOk := t[pnames.Price].(string)
+		priceStr, isOk := assets[pnames.Price].(string)
 		if !isOk {
-			return nil, errors.New("[mktdata] -> error when casting bodyI to priceI")
+			return nil, errors.New("[mktdata] -> error when casting price to string")
 		}
 		if strings.Contains(symbolAsset, "LUNA") || strings.Contains(symbolAsset, "WRX") || strings.Contains(symbolAsset, "BTT") {
 			continue
