@@ -29,7 +29,7 @@ func GetCurrentPrice(response *http.Response) (float64, error) {
 	return price, nil
 }
 
-func GetPricesMap(response *http.Response) ([]symbol.AssetInfo, error) {
+func GetPricesMap(response *http.Response, arbitrageAssets []string) ([]symbol.AssetInfo, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return nil, err
@@ -52,6 +52,7 @@ func GetPricesMap(response *http.Response) ([]symbol.AssetInfo, error) {
 		if !isOk {
 			return nil, errors.New("[mktdata] -> error when casting price to string")
 		}
+
 		if strings.Contains(symbolAsset, "LUNA") || strings.Contains(symbolAsset, "WRX") || strings.Contains(symbolAsset, "BTT") {
 			continue
 		}
@@ -60,7 +61,7 @@ func GetPricesMap(response *http.Response) ([]symbol.AssetInfo, error) {
 			return nil, errors.New("[mkdata] -> error error when parsing priceStr to float64")
 		}
 
-		if strings.Contains(symbolAsset, pnames.Usdt) || strings.Contains(symbolAsset, pnames.Eur) {
+		if strings.Contains(symbolAsset, arbitrageAssets[0]) || strings.Contains(symbolAsset, arbitrageAssets[1]) {
 			assetInfo := symbol.AssetInfo{
 				Symbol: symbolAsset,
 				Price:  price,

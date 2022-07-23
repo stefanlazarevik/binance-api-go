@@ -15,7 +15,9 @@ func main() {
 		Secret: os.Args[2],
 	})
 
-	fmt.Println(mgr)
+	arbitrageAssets := []string{"EUR", "USDT"}
+
+	fmt.Println(mgr.GetPricesMap(arbitrageAssets))
 	//for {
 	//	marginPriceMap, err := mgr.GetPricesMap(binance.BaseMarginUrl, binance.MarginGetPriceEndpoint)
 	//	if err != nil {
