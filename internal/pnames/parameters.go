@@ -34,6 +34,9 @@ const (
 	MinPrice = "minPrice"
 	MaxPrice = "maxPrice"
 	TickSize = "tickSize"
+
+	Bids = "bids"
+	Asks = "asks"
 )
 
 // quantity info

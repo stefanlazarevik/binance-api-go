@@ -76,4 +76,5 @@ const (
 	exchangeInfoEndpoint   = "/api/v3/exchangeInfo"
 	accountInfoEndpoint    = "/api/v3/account"
 	getAllCoinsEndpoint    = "/sapi/v1/capital/config/getall"
+	getAssetOrderBook      = "/api/v3/depth"
 )

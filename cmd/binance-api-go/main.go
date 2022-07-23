@@ -1,11 +1,21 @@
 package main
 
 import (
-	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
+	"fmt"
+	"github.com/posipaka-trade/binance-api-go/pkg/binance"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/log"
+	"os"
 )
 
 func main() {
+	log.Init("binance-api-go", true)
+	mgr := binance.New(exchangeapi.ApiKey{
+		Key:    os.Args[1],
+		Secret: os.Args[2],
+	})
 
+	fmt.Println(mgr)
 	//for {
 	//	marginPriceMap, err := mgr.GetPricesMap(binance.BaseMarginUrl, binance.MarginGetPriceEndpoint)
 	//	if err != nil {
@@ -70,14 +80,4 @@ func main() {
 	////coins, _ := mgr.GetAllCoinsInfo()
 	////fmt.Println(len(coins))
 	////fmt.Println(coins)
-}
-
-type eurAssetStruct struct {
-	symbol symbol.Assets
-	price  float64
-}
-
-type usdtAssetStruct struct {
-	symbol symbol.Assets
-	price  float64
 }

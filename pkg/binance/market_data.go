@@ -30,6 +30,18 @@ func (manager *ExchangeManager) GetPricesMap(baseUrl, endpoint string) ([]symbol
 	return mktdata.GetPricesMap(response)
 }
 
+func (manager *ExchangeManager) GetAssetOrderBook(symbol symbol.Assets, orderBookDepth int) ([]symbol.OrderBook, error) {
+	params := fmt.Sprintf("symbol=%s%s&limit=%d", symbol.Base, symbol.Quote, orderBookDepth)
+
+	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getAssetOrderBook, "?", params))
+	if err != nil {
+		return nil, err
+	}
+
+	defer bncresponse.CloseBody(response)
+	return mktdata.GetAssetOrderBook(response)
+}
+
 func (manager *ExchangeManager) GetCandlestick(symbol symbol.Assets, interval string, limit int) ([]exchangeapi.Candlestick, error) {
 	params := fmt.Sprintf("symbol=%s%s&interval=%s&limit=%d", symbol.Base, symbol.Quote, interval, limit)
 	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getCandlestickEndpoint, "?", params))
