@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/pkg/binance"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
+	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"github.com/posipaka-trade/posipaka-trade-cmn/log"
 	"os"
 )
@@ -15,9 +16,13 @@ func main() {
 		Secret: os.Args[2],
 	})
 
-	arbitrageAssets := []string{"EUR", "USDT"}
-
-	fmt.Println(mgr.GetPricesMap(arbitrageAssets))
+	//arbitrageAssets := []string{"EUR", "USDT"}
+	//
+	//fmt.Println(mgr.GetPricesMap(arbitrageAssets))
+	fmt.Println(mgr.GetAssetOrderBook(symbol.Assets{
+		Base:  "ETH",
+		Quote: "USDT",
+	}, 20))
 	//for {
 	//	marginPriceMap, err := mgr.GetPricesMap(binance.BaseMarginUrl, binance.MarginGetPriceEndpoint)
 	//	if err != nil {

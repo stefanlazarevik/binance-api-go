@@ -27,7 +27,7 @@ func GetAssetOrderBook(response *http.Response) ([]symbol.OrderBook, error) {
 
 	orderBook := make([]symbol.OrderBook, len(asksIArr))
 
-	for _, value := range asksIArr {
+	for i, value := range asksIArr {
 		askI, isOk := value.([]interface{})
 		if isOk != true {
 			return nil, errors.New("[mktdata] -> error when casting order book body to map[string]interface")
@@ -53,10 +53,10 @@ func GetAssetOrderBook(response *http.Response) ([]symbol.OrderBook, error) {
 			return nil, err
 		}
 
-		orderBook = append(orderBook, symbol.OrderBook{
+		orderBook[i] = symbol.OrderBook{
 			Price:    price,
 			Quantity: quantity,
-		})
+		}
 	}
 
 	return orderBook, nil
