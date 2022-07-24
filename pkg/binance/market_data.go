@@ -30,12 +30,12 @@ func (manager *ExchangeManager) GetPricesMap(arbitrageAssets []string) ([]symbol
 	return mktdata.GetPricesMap(response, arbitrageAssets)
 }
 
-func (manager *ExchangeManager) GetAssetOrderBook(symbol symbol.Assets, orderBookDepth int) ([]symbol.OrderBook, error) {
-	params := fmt.Sprintf("symbol=%s%s&limit=%d", symbol.Base, symbol.Quote, orderBookDepth)
+func (manager *ExchangeManager) GetAssetOrderBook(asset symbol.Assets, orderBookDepth int) (symbol.OrderBook, error) {
+	params := fmt.Sprintf("symbol=%s%s&limit=%d", asset.Base, asset.Quote, orderBookDepth)
 
 	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getAssetOrderBook, "?", params))
 	if err != nil {
-		return nil, err
+		return symbol.OrderBook{}, err
 	}
 
 	defer bncresponse.CloseBody(response)
