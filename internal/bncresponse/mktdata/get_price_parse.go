@@ -29,7 +29,7 @@ func GetCurrentPrice(response *http.Response) (float64, error) {
 	return price, nil
 }
 
-func GetPricesMap(response *http.Response, arbitrageAssets []string) ([]symbol.AssetInfo, error) {
+func GetAllPricesList(response *http.Response) ([]symbol.AssetInfo, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return nil, err
@@ -61,14 +61,13 @@ func GetPricesMap(response *http.Response, arbitrageAssets []string) ([]symbol.A
 			return nil, errors.New("[mkdata] -> error error when parsing priceStr to float64")
 		}
 
-		if strings.Contains(symbolAsset, arbitrageAssets[0]) || strings.Contains(symbolAsset, arbitrageAssets[1]) {
-			assetInfo := symbol.AssetInfo{
-				Symbol: symbolAsset,
-				Price:  price,
-			}
-
-			assetPricesArr = append(assetPricesArr, assetInfo)
+		assetInfo := symbol.AssetInfo{
+			Symbol: symbolAsset,
+			Price:  price,
 		}
+
+		assetPricesArr = append(assetPricesArr, assetInfo)
+
 	}
 
 	return assetPricesArr, nil

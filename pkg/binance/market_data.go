@@ -20,14 +20,14 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	return mktdata.GetCurrentPrice(response)
 }
 
-func (manager *ExchangeManager) GetPricesMap(arbitrageAssets []string) ([]symbol.AssetInfo, error) {
+func (manager *ExchangeManager) GetAllPricesList() ([]symbol.AssetInfo, error) {
 	response, err := manager.client.Get(fmt.Sprint(BaseUrl, GetPriceEndpoint))
 	if err != nil {
 		return nil, err
 	}
 
 	defer bncresponse.CloseBody(response)
-	return mktdata.GetPricesMap(response, arbitrageAssets)
+	return mktdata.GetAllPricesList(response)
 }
 
 func (manager *ExchangeManager) GetAssetOrderBook(asset symbol.Assets, orderBookDepth int) (symbol.OrderBook, error) {
