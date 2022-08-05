@@ -20,7 +20,7 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	return mktdata.GetCurrentPrice(response)
 }
 
-func (manager *ExchangeManager) GetAllPricesList() (map[string]float64, error) {
+func (manager *ExchangeManager) GetAllPricesList() ([]symbol.AllPricesList, error) {
 	response, err := manager.client.Get(fmt.Sprint(BaseUrl, GetPriceEndpoint))
 	if err != nil {
 		return nil, err
