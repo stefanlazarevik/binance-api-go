@@ -75,6 +75,6 @@ const (
 	getServerTimeEndpoint  = "/api/v3/time"
 	exchangeInfoEndpoint   = "/api/v3/exchangeInfo"
 	accountInfoEndpoint    = "/api/v3/account"
-	getAllCoinsEndpoint    = "/sapi/v1/capital/config/getall"
+	getAllCoinsEndpoint    = "/api/v3/exchangeInfo"
 	getAssetOrderBook      = "/api/v3/depth"
 )

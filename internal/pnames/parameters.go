@@ -59,6 +59,7 @@ const (
 	TransactTime  = "transactTime"
 	UpdateTime    = "updateTime"
 	TimeInForce   = "timeInForce"
+	Trading       = "TRADING"
 )
 
 //balances info
