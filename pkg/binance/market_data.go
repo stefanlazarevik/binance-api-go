@@ -20,7 +20,7 @@ func (manager *ExchangeManager) GetCurrentPrice(symbol symbol.Assets) (float64, 
 	return mktdata.GetCurrentPrice(response)
 }
 
-func (manager *ExchangeManager) GetAllPricesList() ([]symbol.AssetInfo, error) {
+func (manager *ExchangeManager) GetAllPricesList() ([]symbol.AllPricesList, error) {
 	response, err := manager.client.Get(fmt.Sprint(BaseUrl, GetPriceEndpoint))
 	if err != nil {
 		return nil, err
@@ -77,4 +77,15 @@ func (manager *ExchangeManager) GetSymbolsLimits() ([]symbol.Limits, error) {
 	}
 
 	return limits, nil
+}
+
+func (manager *ExchangeManager) GetAllTradingCoins() ([]symbol.Assets, error) {
+	response, err := manager.client.Get(fmt.Sprint(BaseUrl, getAllCoinsEndpoint))
+	if err != nil {
+		return []symbol.Assets{}, err
+	}
+
+	defer bncresponse.CloseBody(response)
+
+	return mktdata.GetAllTradingCoins(response)
 }
