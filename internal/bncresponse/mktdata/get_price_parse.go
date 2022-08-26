@@ -7,7 +7,6 @@ import (
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"net/http"
 	"strconv"
-	"strings"
 )
 
 func GetCurrentPrice(response *http.Response) (float64, error) {
@@ -29,7 +28,7 @@ func GetCurrentPrice(response *http.Response) (float64, error) {
 	return price, nil
 }
 
-func GetAllPricesList(response *http.Response) ([]symbol.AssetInfo, error) {
+func GetAllPricesList(response *http.Response) ([]symbol.AllPricesList, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return nil, err
@@ -40,9 +39,9 @@ func GetAllPricesList(response *http.Response) ([]symbol.AssetInfo, error) {
 		return nil, errors.New("[mktdata] -> error when casting bodyI to priceI")
 	}
 
-	assetPricesArr := make([]symbol.AssetInfo, 0)
+	assetsPricesMap := make([]symbol.AllPricesList, len(priceI))
 
-	for _, assets := range priceI {
+	for i, assets := range priceI {
 		symbolAsset, isOk := assets[pnames.Symbol].(string)
 		if !isOk {
 			return nil, errors.New("[mktdata] -> error when casting asset symbol to string")
@@ -53,22 +52,16 @@ func GetAllPricesList(response *http.Response) ([]symbol.AssetInfo, error) {
 			return nil, errors.New("[mktdata] -> error when casting price to string")
 		}
 
-		if strings.Contains(symbolAsset, "LUNA") || strings.Contains(symbolAsset, "WRX") || strings.Contains(symbolAsset, "BTT") {
-			continue
-		}
 		price, err := strconv.ParseFloat(priceStr, 64)
 		if err != nil {
 			return nil, errors.New("[mkdata] -> error error when parsing priceStr to float64")
 		}
 
-		assetInfo := symbol.AssetInfo{
+		assetsPricesMap[i] = symbol.AllPricesList{
 			Symbol: symbolAsset,
 			Price:  price,
 		}
-
-		assetPricesArr = append(assetPricesArr, assetInfo)
-
 	}
 
-	return assetPricesArr, nil
+	return assetsPricesMap, nil
 }

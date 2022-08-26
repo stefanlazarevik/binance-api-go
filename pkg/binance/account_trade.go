@@ -108,21 +108,3 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 	defer bncresponse.CloseBody(response)
 	return acctrade.ParseBalancesInfo(response, asset)
 }
-
-func (manager *ExchangeManager) GetAllCoinsInfo() ([]string, error) {
-	urk := make(url.Values, 0)
-	signature := bncrequest.Sign(urk, manager.apiKey.Secret)
-	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(BaseUrl, getAllCoinsEndpoint, "?", signature), nil)
-	if err != nil {
-		return nil, err
-	}
-	bncrequest.SetHeader(request, manager.apiKey.Key)
-
-	response, err := manager.client.Do(request)
-	if err != nil {
-		return nil, err
-	}
-
-	defer bncresponse.CloseBody(response)
-	return acctrade.ParseAllCoinsResponse(response)
-}
