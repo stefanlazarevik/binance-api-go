@@ -121,3 +121,74 @@ func getAssetBid(bidsIArr []interface{}) ([]symbol.BidAsk, error) {
 	}
 	return bidsArr, nil
 }
+
+func GetSymbolsBookTicker(response *http.Response) ([]symbol.OrderBook, error) {
+	bodyI, err := bncresponse.GetResponseBody(response)
+	if err != nil {
+		return []symbol.OrderBook{}, err
+	}
+
+	symbolsOrderBook, isOkay := bodyI.([]map[string]interface{})
+	if !isOkay {
+		return []symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbols order books body to []map[string]interface{}")
+	}
+	orderBookArr := make([]symbol.OrderBook, len(symbolsOrderBook))
+
+	for i, orderBook := range symbolsOrderBook {
+		bidAsk, err := prepareBidAsk(orderBook)
+		if err != nil {
+			return []symbol.OrderBook{}, err
+		}
+		orderBookArr[i] = bidAsk
+	}
+
+	return orderBookArr, nil
+}
+
+func prepareBidAsk(orderBook map[string]interface{}) (symbol.OrderBook, error) {
+	var orderBookArr symbol.OrderBook
+	askArr := make([]symbol.BidAsk, 1)
+	bidArr := make([]symbol.BidAsk, 1)
+	var err error
+
+	askPriceStr, isOkay := orderBook["askPrice"].(string)
+	if !isOkay {
+		return symbol.OrderBook{}, errors.New("[mktdata] -> error when casting `askPrice` to string")
+	}
+	askArr[0].Price, err = strconv.ParseFloat(askPriceStr, 64)
+	if err != nil {
+		return symbol.OrderBook{}, err
+	}
+
+	askQuantityStr, isOkay := orderBook["askQty"].(string)
+	if !isOkay {
+		return symbol.OrderBook{}, errors.New("[mktdata] -> error when casting `askQuantity` to string")
+	}
+
+	askArr[0].Quantity, err = strconv.ParseFloat(askQuantityStr, 64)
+	if err != nil {
+		return symbol.OrderBook{}, err
+	}
+
+	bidPriceStr, isOkay := orderBook["bidPrice"].(string)
+	if !isOkay {
+		return symbol.OrderBook{}, errors.New("[mktdata] -> error when casting `bidPrice` to string")
+	}
+	bidArr[0].Price, err = strconv.ParseFloat(bidPriceStr, 64)
+	if err != nil {
+		return symbol.OrderBook{}, err
+	}
+
+	bidQuantityStr, isOkay := orderBook["bidQty"].(string)
+	if !isOkay {
+		return symbol.OrderBook{}, errors.New("[mktdata] -> error when casting `bidQuantity` to string")
+	}
+	bidArr[0].Quantity, err = strconv.ParseFloat(bidQuantityStr, 64)
+	if err != nil {
+		return symbol.OrderBook{}, err
+	}
+	orderBookArr.Bid = bidArr
+	orderBookArr.Ask = askArr
+
+	return orderBookArr, nil
+}

@@ -77,4 +77,5 @@ const (
 	accountInfoEndpoint    = "/api/v3/account"
 	getAllCoinsEndpoint    = "/api/v3/exchangeInfo"
 	getAssetOrderBook      = "/api/v3/depth"
+	getSymbolsOrderBook    = "/api/v3/ticker/bookTicker"
 )

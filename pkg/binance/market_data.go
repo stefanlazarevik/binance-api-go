@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse"
 	"github.com/posipaka-trade/binance-api-go/internal/bncresponse/mktdata"
+	"github.com/posipaka-trade/binance-api-go/internal/pnames"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi"
 	"github.com/posipaka-trade/posipaka-trade-cmn/exchangeapi/symbol"
 	"time"
@@ -88,4 +89,26 @@ func (manager *ExchangeManager) GetAllTradingCoins() ([]symbol.Assets, error) {
 	defer bncresponse.CloseBody(response)
 
 	return mktdata.GetAllTradingCoins(response)
+}
+
+func (manager *ExchangeManager) GetSymbolsBookTicker(assets []symbol.Assets) ([]symbol.OrderBook, error) {
+	var assetsStr string
+	for i := 0; i < len(assets); i++ {
+		if i == 0 {
+			assetsStr += "["
+		}
+		if i == len(assets)-1 {
+			assetsStr += `"` + assets[i].Base + assets[i].Quote + `"]`
+		} else {
+			assetsStr += `"` + assets[i].Base + assets[i].Quote + `",`
+		}
+	}
+	response, err := manager.client.Get(fmt.Sprintf("%s%s?%s=%s", BaseUrl, getSymbolsOrderBook, pnames.Symbols, assetsStr))
+	if err != nil {
+		return []symbol.OrderBook{}, err
+	}
+
+	defer bncresponse.CloseBody(response)
+
+	return mktdata.GetSymbolsBookTicker(response)
 }
