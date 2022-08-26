@@ -23,7 +23,7 @@ func ParseGetOrderList(response *http.Response) ([]order.Info, error) {
 	}
 
 	ordersInfo := make([]order.Info, 0)
-	for idx, _ := range body {
+	for idx := range body {
 		info, err := retrieveOrderInfo(body[idx])
 		if err != nil {
 			return nil, err
@@ -89,6 +89,13 @@ func retrieveOrderInfo(body map[string]interface{}) (order.Info, error) {
 		return order.Info{}, err
 	}
 
+	if orderInfo.Type == order.Market && orderInfo.Side == order.Sell {
+		orderInfo.QuoteQuantity, err = getQuoteQuantity(body)
+		if err != nil {
+			return order.Info{}, err
+		}
+	}
+
 	if orderInfo.Status == order.Filled {
 		orderInfo.Price = calculateFilledOrderPrice(body)
 	}
@@ -133,8 +140,21 @@ func getOriginQuantity(body map[string]interface{}) (float64, error) {
 	if err != nil {
 		return 0, errors.New("[bncresponse] -> error when parsing quantity to float64")
 	}
-
 	return quantity, nil
+}
+
+func getQuoteQuantity(body map[string]interface{}) (float64, error) {
+	quoteQuantityStr, isOkay := body[pnames.CummulativeQuoteQty].(string)
+	if !isOkay {
+		return 0, errors.New("[bncresponse] -> Field `cummulativeQuoteQty` does not exist")
+	}
+
+	quoteQuantity, err := strconv.ParseFloat(quoteQuantityStr, 64)
+	if err != nil {
+		return 0, errors.New("[bncresponse] -> error when parsing cummulativeQuoteQty to float64")
+	}
+
+	return quoteQuantity, nil
 }
 
 func getTransactionTime(body map[string]interface{}) (time.Time, error) {

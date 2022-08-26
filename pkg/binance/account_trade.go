@@ -59,7 +59,7 @@ func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.Inf
 	}
 
 	orderInfo.Assets = parameters.Assets
-	if orderInfo.Type == order.Market {
+	if orderInfo.Type == order.Market && orderInfo.Side != order.Sell {
 		orderInfo.QuoteQuantity = parameters.Quantity
 	} else if orderInfo.Type == order.Limit {
 		orderInfo.Price = parameters.Price
