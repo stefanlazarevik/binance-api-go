@@ -122,7 +122,7 @@ func getAssetBid(bidsIArr []interface{}) ([]symbol.BidAsk, error) {
 	return bidsArr, nil
 }
 
-func GetSymbolsBookTicker(response *http.Response) ([]symbol.OrderBook, error) {
+func GetSymbolsBookTicker(response *http.Response, assets []symbol.Assets) ([]symbol.OrderBook, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return []symbol.OrderBook{}, err
@@ -134,12 +134,21 @@ func GetSymbolsBookTicker(response *http.Response) ([]symbol.OrderBook, error) {
 	}
 	orderBookArr := make([]symbol.OrderBook, len(symbolsOrderBook))
 
-	for i, orderBook := range symbolsOrderBook {
+	for _, orderBook := range symbolsOrderBook {
 		bidAsk, err := prepareBidAsk(orderBook)
 		if err != nil {
 			return []symbol.OrderBook{}, err
 		}
-		orderBookArr[i] = bidAsk
+		assetSymbol, isOkay := orderBook[pnames.Symbol].(string)
+		if !isOkay {
+			return []symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbol of order book to string")
+		}
+
+		for j := 0; j < len(assets); j++ {
+			if assetSymbol == assets[j].Base+assets[j].Quote {
+				orderBookArr[j] = bidAsk
+			}
+		}
 	}
 
 	return orderBookArr, nil

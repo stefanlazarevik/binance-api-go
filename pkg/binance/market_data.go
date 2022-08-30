@@ -110,5 +110,5 @@ func (manager *ExchangeManager) GetSymbolsBookTicker(assets []symbol.Assets) ([]
 
 	defer bncresponse.CloseBody(response)
 
-	return mktdata.GetSymbolsBookTicker(response)
+	return mktdata.GetSymbolsBookTicker(response, assets)
 }
