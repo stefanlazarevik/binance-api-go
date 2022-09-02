@@ -122,33 +122,28 @@ func getAssetBid(bidsIArr []interface{}) ([]symbol.BidAsk, error) {
 	return bidsArr, nil
 }
 
-func GetSymbolsBookTicker(response *http.Response, assets []symbol.Assets) ([]symbol.OrderBook, error) {
+func GetSymbolsBookTicker(response *http.Response) (map[string]symbol.OrderBook, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
-		return []symbol.OrderBook{}, err
+		return map[string]symbol.OrderBook{}, err
 	}
 
 	symbolsOrderBook, isOkay := bodyI.([]map[string]interface{})
 	if !isOkay {
-		return []symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbols order books body to []map[string]interface{}")
+		return map[string]symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbols order books body to []map[string]interface{}")
 	}
-	orderBookArr := make([]symbol.OrderBook, len(symbolsOrderBook))
+	orderBookArr := make(map[string]symbol.OrderBook, len(symbolsOrderBook))
 
 	for _, orderBook := range symbolsOrderBook {
 		bidAsk, err := prepareBidAsk(orderBook)
 		if err != nil {
-			return []symbol.OrderBook{}, err
+			return map[string]symbol.OrderBook{}, err
 		}
 		assetSymbol, isOkay := orderBook[pnames.Symbol].(string)
 		if !isOkay {
-			return []symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbol of order book to string")
+			return map[string]symbol.OrderBook{}, errors.New("[mktdata] -> error when casting symbol of order book to string")
 		}
-
-		for j := 0; j < len(assets); j++ {
-			if assetSymbol == assets[j].Base+assets[j].Quote {
-				orderBookArr[j] = bidAsk
-			}
-		}
+		orderBookArr[assetSymbol] = bidAsk
 	}
 
 	return orderBookArr, nil

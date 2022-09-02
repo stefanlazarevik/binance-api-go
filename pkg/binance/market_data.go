@@ -91,7 +91,7 @@ func (manager *ExchangeManager) GetAllTradingCoins() ([]symbol.Assets, error) {
 	return mktdata.GetAllTradingCoins(response)
 }
 
-func (manager *ExchangeManager) GetSymbolsBookTicker(assets []symbol.Assets) ([]symbol.OrderBook, error) {
+func (manager *ExchangeManager) GetSymbolsBookTicker(assets []symbol.Assets) (map[string]symbol.OrderBook, error) {
 	var assetsStr string
 	for i := 0; i < len(assets); i++ {
 		if i == 0 {
@@ -103,12 +103,19 @@ func (manager *ExchangeManager) GetSymbolsBookTicker(assets []symbol.Assets) ([]
 			assetsStr += `"` + assets[i].Base + assets[i].Quote + `",`
 		}
 	}
-	response, err := manager.client.Get(fmt.Sprintf("%s%s?%s=%s", BaseUrl, getSymbolsOrderBook, pnames.Symbols, assetsStr))
+	var request string
+	if assets == nil {
+		request = fmt.Sprintf("%s%s", BaseUrl, getSymbolsOrderBook)
+	} else {
+		request = fmt.Sprintf("%s%s?%s=%s", BaseUrl, getSymbolsOrderBook, pnames.Symbols, assetsStr)
+	}
+
+	response, err := manager.client.Get(request)
 	if err != nil {
-		return []symbol.OrderBook{}, err
+		return map[string]symbol.OrderBook{}, err
 	}
 
 	defer bncresponse.CloseBody(response)
 
-	return mktdata.GetSymbolsBookTicker(response, assets)
+	return mktdata.GetSymbolsBookTicker(response)
 }
