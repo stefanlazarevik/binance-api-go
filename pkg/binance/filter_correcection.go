@@ -28,7 +28,7 @@ func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.P
 
 	if parameters.Type == order.Limit {
 		parameters.Price = filterCorrector(parameters.Price, manager.symbolsLimits[limitsIdx].Price)
-		log.Info.Printf("[binance] -> Price value correction. New price %f", parameters.Price)
+		//log.Info.Printf("[binance] -> Price value correction. New price %f", parameters.Price)
 	}
 
 	if parameters.Side == order.Sell {
@@ -40,8 +40,7 @@ func (manager *ExchangeManager) applyFilter(parameters order.Parameters) order.P
 			fmt.Sprint(manager.symbolsLimits[limitsIdx].Quote.Precision)+"f", parameters.Quantity), 64)
 	}
 
-	log.Info.Printf("[binance] -> Quantity value correction on selling. New quantity %f",
-		parameters.Quantity)
+	//log.Info.Printf("[binance] -> Quantity value correction on selling. New quantity %f", parameters.Quantity)
 
 	return parameters
 }
