@@ -53,7 +53,7 @@ func (manager *ExchangeManager) SetOrder(parameters order.Parameters) (order.Inf
 	}
 
 	defer bncresponse.CloseBody(response)
-	orderInfo, err := acctrade.ParseOrderInfoResponse(response)
+	orderInfo, err := acctrade.ParseSetOrderResponse(response)
 	if err != nil {
 		return order.Info{}, err
 	}
@@ -107,4 +107,26 @@ func (manager *ExchangeManager) GetAssetBalance(asset string) (float64, error) {
 
 	defer bncresponse.CloseBody(response)
 	return acctrade.ParseBalancesInfo(response, asset)
+}
+
+func (manager *ExchangeManager) GetOrderInfo(asset symbol.Assets, orderId string) (order.Info, error) {
+	body := url.Values{}
+	body.Set(pnames.Symbol, asset.Base+asset.Quote)
+	body.Set(pnames.OrderId, orderId)
+	signature := bncrequest.Sign(body, manager.apiKey.Secret)
+
+	request, err := http.NewRequest(http.MethodGet, fmt.Sprint(BaseUrl, getOrderInformation, "?", signature), nil)
+	if err != nil {
+		return order.Info{}, err
+	}
+
+	bncrequest.SetHeader(request, manager.apiKey.Key)
+
+	response, err := manager.client.Do(request)
+	if err != nil {
+		return order.Info{}, err
+	}
+
+	defer bncresponse.CloseBody(response)
+	return acctrade.ParseOrderInfo(response)
 }

@@ -78,4 +78,6 @@ const (
 	getAllCoinsEndpoint    = "/api/v3/exchangeInfo"
 	getAssetOrderBook      = "/api/v3/depth"
 	getSymbolsOrderBook    = "/api/v3/ticker/bookTicker"
+	getOrderInformation    = "/api/v3/order"
+	cancelReplaceOrder     = "/api/v3/order/cancelReplace"
 )

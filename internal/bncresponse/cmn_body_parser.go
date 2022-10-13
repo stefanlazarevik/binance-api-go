@@ -62,11 +62,9 @@ func GetResponseBody(response *http.Response) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	if response.StatusCode/100 != 2 {
 		return nil, parseBinanceError(body)
 	}
-
 	return body, nil
 }
 

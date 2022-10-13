@@ -24,7 +24,7 @@ func ParseGetOrderList(response *http.Response) ([]order.Info, error) {
 
 	ordersInfo := make([]order.Info, 0)
 	for idx := range body {
-		info, err := retrieveOrderInfo(body[idx])
+		info, err := RetrieveSetOrderInfo(body[idx])
 		if err != nil {
 			return nil, err
 		}
@@ -34,7 +34,7 @@ func ParseGetOrderList(response *http.Response) ([]order.Info, error) {
 	return ordersInfo, nil
 }
 
-func ParseOrderInfoResponse(response *http.Response) (order.Info, error) {
+func ParseSetOrderResponse(response *http.Response) (order.Info, error) {
 	bodyI, err := bncresponse.GetResponseBody(response)
 	if err != nil {
 		return order.Info{}, err
@@ -45,10 +45,10 @@ func ParseOrderInfoResponse(response *http.Response) (order.Info, error) {
 		return order.Info{}, errors.New("[bncresponse] -> Set order response is not key/value pair array")
 	}
 
-	return retrieveOrderInfo(body)
+	return RetrieveSetOrderInfo(body)
 }
 
-func retrieveOrderInfo(body map[string]interface{}) (order.Info, error) {
+func RetrieveSetOrderInfo(body map[string]interface{}) (order.Info, error) {
 	orderIdI, isOkay := body[pnames.OrderId]
 	if !isOkay {
 		return order.Info{}, errors.New("[bncresponse] -> Field `orderId` does not exist")
